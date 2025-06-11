@@ -134,3 +134,44 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# VSCodeなどエディタ
+.vscode/
+.idea/
+*.swp
+
+# OSごとの不要ファイル
+.DS_Store
+Thumbs.db
+
+# 環境・設定ファイル
+.env
+config/*.env
+config/*.local.json
+config/config.json
+config/docker.env
+
+# ログ・一時ファイル
+logs/
+*.log
+*.tmp
+
+# Minecraftサーバーデータ
+minecraft-servers/
+
+# Docker
+*.pid
+*.sock
+
+# バックアップや一時生成物
+*.bak
+*.old
+*.orig
+
+# バイナリ・実行ファイル（例：ownserverバンドル時）
+bin/ownserver
+bin/*.exe
+
+# その他
+dist/
+coverage/
