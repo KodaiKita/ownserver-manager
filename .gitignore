@@ -175,3 +175,19 @@ bin/*.exe
 # その他
 dist/
 coverage/
+
+# 開発中の一時ファイル
+temp-files/
+test_*.js
+*_test.js
+simple_*.js
+direct_*.js
+minimal_*.js
+final_*.js
+sync_*.js
+
+# 自動ダウンロードファイル
+java-runtimes/
+
+# 設計書
+"what is this.md"
