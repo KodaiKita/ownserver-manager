@@ -196,5 +196,4 @@ java-runtimes/
 temp-files/
 
 # 設計書など一時的なメモファイル
-"what is this.md"
 *.md.tmp
