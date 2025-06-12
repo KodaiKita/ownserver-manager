@@ -1,0 +1,33 @@
+{
+  "minecraft": {
+    "serverDirectory": "/app/minecraft-servers/survival",
+    "port": 25565,
+    "javaArgs": [
+      "-Xmx2G",
+      "-Xms1G"
+    ],
+    "autoRestart": true,
+    "restartDelay": 5000
+  },
+  "ownserver": {
+    "binaryPath": "/app/bin/ownserver",
+    "autoRestart": true,
+    "restartDelay": 3000
+  },
+  "cloudflare": {
+    "domain": "play.cspd.net",
+    "ttl": 60
+  },
+  "healthcheck": {
+    "enabled": true,
+    "interval": 30000,
+    "timeout": 5000,
+    "retries": 3
+  },
+  "logging": {
+    "level": "info",
+    "directory": "./logs",
+    "maxFileSize": "10MB",
+    "maxFiles": 5
+  }
+}

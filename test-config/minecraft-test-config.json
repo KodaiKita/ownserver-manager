@@ -1,0 +1,37 @@
+{
+  "minecraft": {
+    "eula": {
+      "agreed": true,
+      "userConsent": true,
+      "note": "By setting this to true, you indicate your agreement to Minecraft EULA (https://aka.ms/MinecraftEULA)"
+    },
+    "servers": {
+      "test_1.8.8": {
+        "serverDirectory": "./minecraft-servers/test_1.8.8",
+        "serverJar": "paper-1.8.8-445.jar",
+        "javaVersion": "auto",
+        "javaArgs": ["-Xmx1G", "-Xms512M"],
+        "autoRestart": false
+      },
+      "test_1.18.2": {
+        "serverDirectory": "./minecraft-servers/test_1.18.2", 
+        "serverJar": "paper-1.18.2-388.jar",
+        "javaVersion": "auto",
+        "javaArgs": ["-Xmx2G", "-Xms1G"],
+        "autoRestart": false
+      },
+      "test_1.21.5": {
+        "serverDirectory": "./minecraft-servers/test_1.21.5",
+        "serverJar": "paper-1.21.5-113.jar", 
+        "javaVersion": "auto",
+        "javaArgs": ["-Xmx2G", "-Xms1G"],
+        "autoRestart": false
+      }
+    }
+  },
+  "logging": {
+    "level": "info",
+    "enableConsole": true,
+    "enableFile": true
+  }
+}
