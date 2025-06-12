@@ -189,5 +189,9 @@ sync_*.js
 # 自動ダウンロードファイル
 java-runtimes/
 
-# 設計書
+# But keep test JAR files for practical testing
+!minecraft-servers/*/*.jar
+
+# 設計書など一時的なメモファイル
 "what is this.md"
+*.md.tmp
