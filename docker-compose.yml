@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  ownserver-manager:
+    build: .
+    container_name: ownserver-manager
+    restart: unless-stopped
+    
+    # Environment variables
+    env_file:
+      - ./config/docker.env
+    
+    # Volume mounts
+    volumes:
+      - ./minecraft-servers:/app/minecraft-servers    # Minecraft server directories
+      - ./config:/app/config                          # Configuration files
+      - ./logs:/app/logs                             # Log files
+      - ./backups:/app/backups                       # Backup files (optional)
+    
+    # Port mapping
+    ports:
+      - "25565:25565"  # Minecraft server port
+    
+    # Network settings
+    networks:
+      - ownserver-network
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "node", "src/commands/cli.js", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 1G
+
+networks:
+  ownserver-network:
+    driver: bridge
+
+# Optional: Monitoring stack (Uncomment if needed)
+# services:
+#   prometheus:
+#     image: prom/prometheus:latest
+#     ports:
+#       - "9090:9090"
+#     volumes:
+#       - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+#     networks:
+#       - ownserver-network
+#
+#   grafana:
+#     image: grafana/grafana:latest
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - GF_SECURITY_ADMIN_PASSWORD=admin
+#     networks:
+#       - ownserver-network

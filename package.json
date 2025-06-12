@@ -1,0 +1,49 @@
+{
+  "name": "ownserver-manager",
+  "version": "1.0.0",
+  "description": "Minecraft Server with OwnServer and CloudFlare DNS management",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "cli": "node src/commands/cli.js",
+    "test": "mocha tests/**/*.test.js --recursive --timeout 30000",
+    "test:minecraft": "mocha tests/minecraft/*.test.js --timeout 30000",
+    "test:java": "mocha tests/minecraft/JavaVersionManager.test.js",
+    "test:phase1": "mocha tests/minecraft/MinecraftServerManager_Phase1.test.js --timeout 60000",
+    "dev": "node --inspect src/index.js",
+    "logs": "node src/commands/cli.js logs --follow"
+  },
+  "bin": {
+    "ownserver-manager": "src/commands/cli.js"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "tar": "^6.2.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KodaiKita/ownserver-manager.git"
+  },
+  "keywords": [
+    "minecraft",
+    "server",
+    "ownserver",
+    "cloudflare",
+    "dns",
+    "docker",
+    "tunnel"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/KodaiKita/ownserver-manager/issues"
+  },
+  "homepage": "https://github.com/KodaiKita/ownserver-manager#readme"
+}
