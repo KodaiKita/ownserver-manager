@@ -192,6 +192,9 @@ java-runtimes/
 # But keep test JAR files for practical testing
 !minecraft-servers/*/*.jar
 
+# 一時テストファイルディレクトリ
+temp-files/
+
 # 設計書など一時的なメモファイル
 "what is this.md"
 *.md.tmp
