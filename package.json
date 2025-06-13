@@ -21,6 +21,7 @@
     "tar": "^6.2.0"
   },
   "devDependencies": {
+    "chai": "^5.2.0",
     "mocha": "^10.2.0"
   },
   "engines": {
