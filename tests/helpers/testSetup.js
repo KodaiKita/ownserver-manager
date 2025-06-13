@@ -45,7 +45,11 @@ async function setupTestEnvironment() {
         }
         
         console.log('Test environment setup completed');
-        return { testLogDir, testMinecraftDir };
+        return { 
+            testLogDir, 
+            testMinecraftDir,
+            minecraftServerPath: testServerDirs[0] // デフォルトのテストサーバーパス
+        };
     } catch (error) {
         console.error('Failed to setup test environment:', error);
         throw error;
@@ -92,6 +96,7 @@ class MockLogger {
     
     getLogs() { return this.logs; }
     clearLogs() { this.logs = []; }
+    clear() { this.logs = []; } // clearメソッドのエイリアス
 }
 
 /**
@@ -130,6 +135,7 @@ function waitForEvent(emitter, eventName, timeout = 5000) {
 
 module.exports = {
     setupTestEnvironment,
+    teardownTestEnvironment: cleanupTestEnvironment, // エイリアス追加
     cleanupTestEnvironment,
     MockLogger,
     createTestConfig,

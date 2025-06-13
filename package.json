@@ -10,6 +10,11 @@
     "test:minecraft": "mocha tests/minecraft/*.test.js --timeout 30000",
     "test:java": "mocha tests/minecraft/JavaVersionManager.test.js",
     "test:phase1": "mocha tests/minecraft/MinecraftServerManager_Phase1.test.js --timeout 60000",
+    "test:phase2": "mocha tests/minecraft/MinecraftServerManager_Phase2.test.js --timeout 60000",
+    "test:phase3": "mocha tests/integration/Phase3Integration.test.js --timeout 60000",
+    "test:ownserver": "mocha tests/ownserver/*.test.js --timeout 30000",
+    "test:cloudflare": "mocha tests/cloudflare/*.test.js --timeout 30000",
+    "test:integration": "mocha tests/integration/*.test.js --timeout 60000",
     "dev": "node --inspect src/index.js",
     "logs": "node src/commands/cli.js logs --follow"
   },

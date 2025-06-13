@@ -19,7 +19,7 @@ class LogParser extends EventEmitter {
         // ログパターン定義
         this.patterns = {
             // サーバー状態
-            serverReady: /\[.*\]: Done \((.*)\)! For help, type "help"/,
+            serverReady: /\[.*\]: Done \((.*)\)! For help, type "help".*$/,
             serverStarting: /\[.*\]: Starting minecraft server version (.*)/,
             serverStopping: /\[.*\]: Stopping server/,
             serverShutdown: /\[.*\]: Stopping the server/,
