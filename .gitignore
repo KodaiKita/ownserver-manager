@@ -192,8 +192,7 @@ java-runtimes/
 # But keep test JAR files for practical testing
 !minecraft-servers/*/*.jar
 
-# 一時テストファイルディレクトリ
-temp-files/
-
-# 設計書など一時的なメモファイル
-*.md.tmp
+# Additional exclusions for Git operations
+# But keep important JAR files for practical testing
+!minecraft-servers/*/*.jar
+!minecraft-servers/*/eula.txt
