@@ -97,8 +97,8 @@ nano config/config.json
 |------|------|-----|
 | `domain` | メインドメイン | `yourdomain.com` |
 | `ttl` | DNS TTL値（秒） | `60` (1分) |
-| `apiToken` | CloudFlare APIトークン | `c7Q0Zk7PzZ...` |
-| `zoneId` | CloudFlare ゾーンID | `346ec04a51...` |
+| `apiToken` | CloudFlare APIトークン | `YOUR_API_TOKEN` |
+| `zoneId` | CloudFlare ゾーンID | `YOUR_ZONE_ID` |
 | `email` | CloudFlareアカウントメール | `user@example.com` |
 | `proxied` | CloudFlareプロキシ使用 | `false` |
 | `retryAttempts` | API呼び出しリトライ回数 | `3` |

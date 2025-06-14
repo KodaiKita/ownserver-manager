@@ -211,3 +211,33 @@ alpha-*.log
 # Temporary files
 temp-files/
 "\0331"
+
+# ========================================
+# セキュリティ関連 - 機密情報を含むファイル
+# ========================================
+# API トークン・キー
+*.key
+*.secret
+*.token
+api-keys.json
+secrets.json
+
+# 設定ファイル（実際の認証情報を含む）
+config/production.json
+config/secrets.json
+config/cloudflare.json
+
+# 個人・組織固有の設定
+config/local.json
+config/personal.json
+config/organization.json
+
+# バックアップファイル（機密情報が含まれる可能性）
+*.bak.json
+*.backup.json
+config.json.bak
+.env.bak
+
+# CloudFlare設定（実値）
+cloudflare-config.json
+cf-config.json

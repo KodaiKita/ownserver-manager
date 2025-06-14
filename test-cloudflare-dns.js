@@ -3,8 +3,8 @@
 // CloudFlare API テストスクリプト
 const https = require('https');
 
-const API_TOKEN = '***REMOVED***';
-const ZONE_ID = '***REMOVED***';
+const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || 'YOUR_CLOUDFLARE_API_TOKEN';
+const ZONE_ID = process.env.CLOUDFLARE_ZONE_ID || 'YOUR_CLOUDFLARE_ZONE_ID';
 const DOMAIN = 'play.cspd.net';
 const TARGET_HOST = 'shard-2509.ownserver.kumassy.com';
 const TARGET_PORT = 17343;
