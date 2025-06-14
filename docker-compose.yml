@@ -2,9 +2,12 @@ version: '3.8'
 
 services:
   ownserver-manager:
-    build: .
+    image: ownserver-manager:process-detection
     container_name: ownserver-manager
     restart: unless-stopped
+    
+    # Docker用のエントリーポイント（デーモンモード）
+    command: ["tail", "-f", "/dev/null"]
     
     # Environment variables
     env_file:
@@ -27,7 +30,7 @@ services:
     
     # Health check
     healthcheck:
-      test: ["CMD", "node", "src/commands/cli.js", "status"]
+      test: ["CMD", "node", "bin/ownserver-manager", "status"]
       interval: 30s
       timeout: 10s
       retries: 3

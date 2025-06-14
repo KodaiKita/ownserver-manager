@@ -7,10 +7,11 @@ const fs = require('fs');
 const path = require('path');
 
 class Logger {
-    constructor(category, logLevel = null) {
+    constructor(category, options = {}) {
         this.category = category;
-        this.logLevel = logLevel || process.env.LOG_LEVEL || 'info';
-        this.logDir = process.env.LOG_DIR || '/app/logs';
+        this.logLevel = options.logLevel || process.env.LOG_LEVEL || 'info';
+        this.logDir = options.logDir || process.env.LOG_DIR || path.join(process.cwd(), 'logs');
+        this.enableFileLogging = options.enableFileLogging !== false; // デフォルトはtrue
         this.maxFileSize = 10 * 1024 * 1024; // 10MB
         this.maxFiles = 5;
         
@@ -21,7 +22,9 @@ class Logger {
             error: 3
         };
         
-        this.ensureLogDirectory();
+        if (this.enableFileLogging) {
+            this.ensureLogDirectory();
+        }
     }
 
     /**
@@ -53,11 +56,13 @@ class Logger {
             this.outputToConsole(level, logEntry);
         }
 
-        // ファイル出力
-        try {
-            this.writeToFileSync(logEntry);
-        } catch (error) {
-            console.error('Failed to write log:', error);
+        // ファイル出力（有効な場合のみ）
+        if (this.enableFileLogging) {
+            try {
+                this.writeToFileSync(logEntry);
+            } catch (error) {
+                console.error('Failed to write log:', error);
+            }
         }
     }
 

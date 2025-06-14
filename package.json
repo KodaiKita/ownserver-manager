@@ -1,8 +1,12 @@
 {
   "name": "ownserver-manager",
-  "version": "1.0.0",
-  "description": "Minecraft Server with OwnServer and CloudFlare DNS management",
+  "version": "1.0.0-alpha.1",
+  "description": "Production-Ready Minecraft Server Manager with CloudFlare DNS Integration - Alpha 1.0.0",
   "main": "src/index.js",
+  "bin": {
+    "ownserver-manager": "./bin/ownserver-manager",
+    "osm": "./bin/ownserver-manager"
+  },
   "scripts": {
     "start": "node src/index.js",
     "cli": "node src/commands/cli.js",
@@ -13,15 +17,19 @@
     "dev": "node --inspect src/index.js",
     "logs": "node src/commands/cli.js logs --follow"
   },
-  "bin": {
-    "ownserver-manager": "src/commands/cli.js"
-  },
   "dependencies": {
     "commander": "^11.0.0",
+    "inquirer": "^12.6.3",
     "tar": "^6.2.0"
   },
   "devDependencies": {
+<<<<<<< Updated upstream
     "mocha": "^10.2.0"
+=======
+    "chai": "^5.2.0",
+    "dotenv": "^16.5.0",
+    "mocha": "^10.8.2"
+>>>>>>> Stashed changes
   },
   "engines": {
     "node": ">=18.0.0"
@@ -33,13 +41,16 @@
   "keywords": [
     "minecraft",
     "server",
-    "ownserver",
+    "manager",
     "cloudflare",
     "dns",
     "docker",
-    "tunnel"
+    "production",
+    "automation",
+    "devops",
+    "ubuntu"
   ],
-  "author": "",
+  "author": "Kodai Kita",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {

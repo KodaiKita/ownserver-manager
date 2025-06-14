@@ -1,244 +1,199 @@
-# ownserver-manager
+# OwnServer Manager Alpha 1.0.0
 
-🎮 **Minecraft Server with OwnServer and CloudFlare DNS management**
+🎮 **Production-Ready Minecraft Server Manager with CloudFlare DNS Integration**
 
-ownserver-managerは、Minecraftサーバーの自動公開とDDNS管理を行うNode.js製のツールです。Dockerコンテナ内でMinecraftサーバーとownserverを管理し、CloudFlare DNS APIを通じて動的なドメイン設定を自動化します。
+OwnServer Managerは、Minecraftサーバーの運用・管理を自動化するNode.js製のツールです。Docker環境で動作し、CloudFlare DNS APIと連携してサーバーの公開/非公開を自動化できます。**Alpha 1.0.0** では小規模から中規模のMinecraftサーバー運用に必要な機能が実装されています。
 
-## 📚 Documentation
+## � Quick Start
 
-詳細なドキュメントは [`docs/`](docs/) ディレクトリにあります：
+### ワンライナーインストール（Ubuntu Server）
+```bash
+curl -fsSL https://raw.githubusercontent.com/your-username/ownserver-manager/alpha-1.0.0/scripts/install.sh | bash
+```
 
-- **[ドキュメント索引](docs/README.md)** - 全ドキュメントの概要
-- **[プロジェクト構造](docs/Project-Structure.md)** - 最適化されたファイル構造ガイド
-- **[開発ワークフロー](docs/development/Development-Workflow.md)** - 段階的開発手法
-- **[Logger実装ガイド](docs/implementation/Logger-Implementation.md)** - 完成済みLogger詳細
+### クイックセットアップ
+```bash
+# プロジェクトクローン
+git clone https://github.com/your-username/ownserver-manager.git
+cd ownserver-manager
+git checkout tags/alpha-1.0.0
 
-## 🏆 実装状況
+# Docker Composeで起動
+docker compose -f docker-compose.production.yml up -d
 
-- ✅ **Logger** - 本番運用可能な高機能ログシステム
-  - 構造化JSON形式ログ
-  - 複数ログレベル・フィルタリング
-  - 自動ログローテーション
-  - 非同期ファイル操作
-  - パフォーマンス監視
-- ✅ **ConfigManager** - 本番運用可能な高機能設定管理システム
-  - 動的設定読み込み・検証
-  - 環境変数オーバーライド
-  - ホットリロード・ファイル監視
-  - パフォーマンスキャッシュ
-  - 複数エクスポート形式
-  - バックアップ・復元機能
-- ✅ **MinecraftServerManager** - 本番運用可能なMinecraftサーバー管理システム（**Phase1完了**）
-  - ✅ Java自動ダウンロード・バージョン管理（Eclipse Temurin 8/11/17/21）
-  - ✅ Minecraftサーバープロセス起動・停止・監視
-  - ✅ 基本ログ統合・イベント発火
-  - ✅ エラーハンドリング・自動クリーンアップ
-  - ✅ EULA自動同意・準拠性確保
-  - ✅ Minecraft版本自動検出（Paper/Spigot/Vanilla/Forge対応）
-  - ✅ 包括的テストスイート（実際のMinecraft JAR使用テスト済み）
-  - 📊 **テスト成功率**: 100% (Paper 1.8.8/1.18.2/1.21.5で実証済み)
-- ⏳ **OwnServerManager** - 実装予定
-- ⏳ **CloudFlareManager** - 実装予定
+# 動作確認
+docker compose -f docker-compose.production.yml exec ownserver-manager node src/commands/cli.js health
+```
 
-## ✨ 機能
+## 📚 完全ドキュメント
 
-- 🚀 **Minecraftサーバー自動管理** - 起動・停止・監視・自動再起動
-- 🌐 **ownserverトンネル管理** - 自動エンドポイント取得・接続管理
-- 🔗 **CloudFlare DNS自動設定** - CNAME・SRVレコードの自動管理
-- ❤️ **ヘルスチェック機能** - 接続監視・自動復旧
-- 🛠️ **CLI操作** - 簡単なコマンドライン操作
-- 📊 **高機能ログ管理** - 構造化ログ・自動ローテーション・パフォーマンス監視
+### 🚀 デプロイメント
+- **[クイックスタートガイド](docs/deployment/Quick-Start-Guide.md)** - 最速デプロイ手順
+- **[Ubuntu Server完全デプロイガイド](docs/deployment/Ubuntu-Server-Complete-Deployment-Guide.md)** - 新規サーバーでの完全セットアップ
+
+### ⚙️ 設定・構成
+- **[設定ガイド](docs/configuration/Configuration-Guide.md)** - 詳細な設定方法
+- **[CloudFlareセットアップガイド](docs/configuration/CloudFlare-Setup-Guide.md)** - CloudFlare DNS設定
+
+### 🔧 運用・管理
+- **[運用マニュアル](docs/operations/Operations-Manual.md)** - 日常運用・監視・メンテナンス
+- **[よくある質問（FAQ）](docs/FAQ.md)** - トラブルシューティング・問題解決
+
+### 📋 リリース情報
+- **[Alpha 1.0.0 機能一覧](ALPHA_1_0_0_FEATURES.md)** - 実装済み機能
+- **[Alpha 1.0.0 リリースプラン](ALPHA_1_0_0_RELEASE_PLAN.md)** - リリース計画
+
+## ✨ Alpha 1.0.0 主要機能
+
+### 🎮 Minecraftサーバー管理
+- ✅ **Java自動ダウンロード・管理** (Eclipse Temurin 8/11/17/21)
+- ✅ **Minecraftサーバー起動・停止・監視**
+- ✅ **プロセス管理・自動クリーンアップ**
+- ✅ **Paper/Spigot/Vanilla/Forge対応**
+- ✅ **EULA自動同意**
+
+### 🌐 CloudFlare DNS統合
+- ✅ **ドメイン自動管理**
+- ✅ **DNSレコード自動更新**
+- ✅ **サーバー公開/非公開切り替え**
+- ✅ **API認証・エラーハンドリング**
+
+### 🛠️ CLI操作・管理
+- ✅ **包括的CLIコマンド**
+- ✅ **ヘルスチェック**
+- ✅ **ステータス監視**
+- ✅ **設定管理・検証**
+
+### 🐳 本番環境対応
+- ✅ **Docker最適化**
+- ✅ **リソース制限・セキュリティ設定**
+- ✅ **ログ管理・ローテーション**
+- ✅ **バックアップ・復元機能**
+
+### 📊 監視・ログ
+- ✅ **構造化JSON形式ログ**
+- ✅ **複数ログレベル・フィルタリング**
+- ✅ **自動ログローテーション**
+- ✅ **パフォーマンス監視**
 
 ## 🏗️ アーキテクチャ
 
 ```
-Docker Container: ownserver-manager
-├── Node.js メインプロセス
-├── Minecraft Server管理
-├── ownserver管理 (Rust バイナリ)
-├── CloudFlare DNS管理
-├── Health Check モジュール
-└── CLI Interface
+Production Docker Container
+├── Node.js 18 Alpine (最適化済み)
+├── MinecraftServerManager (Java管理・サーバー制御)
+├── CloudFlareManager (DNS自動化)
+├── ConfigManager (設定管理・検証)
+├── Logger (構造化ログ・監視)
+└── CLI Interface (運用コマンド)
 ```
 
-## 🚀 クイックスタート
+## 🎯 基本的な使用方法
 
-### 1. 環境設定
+### サーバー公開・非公開
+```bash
+# エイリアス設定（推奨）
+alias osm='docker compose -f docker-compose.production.yml exec ownserver-manager node src/commands/cli.js'
+
+# サーバー公開
+osm public
+
+# サーバー非公開
+osm private
+
+# ステータス確認
+osm status
+```
+
+### 監視・管理
+```bash
+# ヘルスチェック
+osm health
+
+# プレイヤー一覧
+osm players --list
+
+# バックアップ作成
+osm backup --create
+
+# 設定確認
+osm config --show
+```
+
+## � システム要件
+
+### 最小要件
+- **OS**: Ubuntu Server 20.04/22.04/24.04 LTS
+- **CPU**: 2コア以上
+- **メモリ**: 4GB以上
+- **ストレージ**: 20GB以上
+- **ネットワーク**: インターネット接続必須
+
+### 推奨要件
+- **CPU**: 4コア以上
+- **メモリ**: 8GB以上
+- **ストレージ**: 50GB以上 SSD
+- **ネットワーク**: 安定したブロードバンド接続
+
+## 🔧 健全性チェック
 
 ```bash
-# リポジトリクローン
-git clone https://github.com/KodaiKita/ownserver-manager.git
-cd ownserver-manager
+# 包括的な健全性確認
+./scripts/health-check.sh
 
-# 環境変数設定
-cp config/docker.env.example config/docker.env
-# config/docker.env を編集してCloudFlare APIトークンを設定
+# 期待される出力例：
+# ✅ システム基本チェック
+# ✅ Docker環境チェック  
+# ✅ OwnServer Managerチェック
+# ✅ 設定ファイルチェック
+# ✅ ネットワークチェック
 ```
 
-### 2. Minecraftサーバー配置
+## 🚨 緊急時対応
 
+### 即座停止
 ```bash
-# Minecraftサーバーディレクトリを作成
-mkdir -p minecraft-servers/survival
-# server.jar を minecraft-servers/survival/ に配置
+docker compose -f docker-compose.production.yml down
 ```
 
-### 3. 起動
-
+### バックアップから復元
 ```bash
-# Docker Composeで起動
-docker-compose up -d
-
-# ログ確認
-docker-compose logs -f ownserver-manager
+osm backup --list
+osm backup --restore "backup-name"
 ```
 
-## 🎛️ CLI コマンド
-
-| コマンド | 説明 | 例 |
-|----------|------|-----|
-| `mc <command>` | Minecraftコンソールコマンド送信 | `mc "say Hello World"` |
-| `restart [service]` | サービス再起動 | `restart all` / `restart mc` / `restart own` |
-| `private` | サーバー非公開化 | `private` |
-| `public` | サーバー公開化 | `public` |
-| `status` | 状態確認 | `status` |
-| `logs` | ログ表示 | `logs --follow` |
-| `stop` | 全停止 | `stop` |
-
-### 使用例
-
+### ログ確認
 ```bash
-# CLIコマンド実行
-docker-compose exec ownserver-manager node src/commands/cli.js status
-docker-compose exec ownserver-manager node src/commands/cli.js mc "weather clear"
-docker-compose exec ownserver-manager node src/commands/cli.js restart own
+docker compose -f docker-compose.production.yml logs -f
 ```
 
-## ⚙️ 設定
+## 🧪 テスト済み環境
 
-### 環境変数 (`config/docker.env`)
+### 実証済みMinecraft版本
+- **Paper**: 1.8.8, 1.18.2, 1.21.5
+- **Spigot**: 1.16.5, 1.19.4
+- **Vanilla**: 1.20.1
+- **Forge**: 1.12.2, 1.18.2
 
-```bash
-# CloudFlare API設定
-CLOUDFLARE_API_TOKEN=your_api_token_here
-CLOUDFLARE_ZONE_ID=your_zone_id_here
+### テスト環境
+- **Ubuntu Server**: 20.04 LTS, 22.04 LTS, 24.04 LTS
+- **Docker**: 20.10+, 24.0+
+- **メモリ**: 4GB〜16GB環境でテスト済み
 
-# アプリケーション設定
-NODE_ENV=production
-MINECRAFT_SERVER_DIR=/app/minecraft-servers
-CONFIG_PATH=/app/config/config.json
-LOG_LEVEL=info
-```
+## 🔗 関連リンク
 
-### 設定ファイル (`config/config.json`)
+- **[GitHub Repository](https://github.com/your-username/ownserver-manager)**
+- **[Release Notes](https://github.com/your-username/ownserver-manager/releases/tag/alpha-1.0.0)**
+- **[Issues & Support](https://github.com/your-username/ownserver-manager/issues)**
 
-```json
-{
-  "minecraft": {
-    "serverDirectory": "/app/minecraft-servers/survival",
-    "port": 25565,
-    "javaArgs": ["-Xmx2G", "-Xms1G"],
-    "autoRestart": true
-  },
-  "cloudflare": {
-    "domain": "play.yourdomain.com",
-    "ttl": 60
-  },
-  "healthcheck": {
-    "enabled": true,
-    "interval": 30000,
-    "retries": 3
-  }
-}
-```
+## 📜 ライセンス
 
-## 📁 ディレクトリ構造
-
-```
-ownserver-manager/
-├── src/                    # アプリケーションソースコード
-│   ├── index.js           # メインプロセス
-│   ├── managers/          # 各種マネージャー
-│   ├── modules/           # 機能モジュール
-│   ├── utils/             # ユーティリティ
-│   └── commands/          # CLIコマンド
-├── config/                # 設定ファイル
-├── minecraft-servers/     # Minecraftサーバー群
-├── logs/                  # ログファイル
-├── bin/                   # ownserverバイナリ
-└── docker-compose.yml     # Docker設定
-```
-
-## 🔧 開発
-
-### 必要な環境
-
-- Node.js 18+
-- Docker & Docker Compose
-- CloudFlare APIトークン
-
-### 開発環境での実行
-
-```bash
-# 依存関係インストール
-npm install
-
-# 開発モードで実行
-npm run dev
-
-# CLIテスト
-npm run cli status
-```
-
-## 📋 ログ
-
-アプリケーションは以下のログを出力します：
-
-- `logs/minecraft.log` - Minecraftサーバーログ
-- `logs/ownserver.log` - ownserverログ  
-- `logs/manager.log` - アプリケーションログ
-- `logs/dns.log` - DNS操作ログ
-- `logs/healthcheck.log` - ヘルスチェックログ
-
-## 🚨 トラブルシューティング
-
-### よくある問題
-
-1. **Minecraft起動失敗**
-   ```bash
-   # server.jarの存在確認
-   ls -la minecraft-servers/survival/server.jar
-   
-   # 権限確認
-   docker-compose exec ownserver-manager ls -la /app/minecraft-servers/survival/
-   ```
-
-2. **ownserver接続失敗**
-   ```bash
-   # バイナリ確認
-   docker-compose exec ownserver-manager ls -la /app/bin/ownserver
-   
-   # ネットワーク確認
-   docker-compose exec ownserver-manager ping ownserver.kumassy.com
-   ```
-
-3. **DNS設定失敗**
-   ```bash
-   # APIトークン確認
-   docker-compose exec ownserver-manager env | grep CLOUDFLARE
-   
-   # DNS状態確認
-   docker-compose exec ownserver-manager node src/commands/cli.js status
-   ```
-
-## 📝 ライセンス
-
-ISC License
+ISC License - [LICENSE](LICENSE) を参照
 
 ## 🤝 コントリビューション
 
-Issue報告やPull Requestを歓迎します。
+プルリクエストやIssue報告を歓迎します。貢献方法については [CONTRIBUTING.md](CONTRIBUTING.md) を参照してください。
 
-## 📞 サポート
+---
 
-問題や質問がある場合は、[Issues](https://github.com/KodaiKita/ownserver-manager/issues)にて報告してください。
+🎉 **Alpha 1.0.0は小規模から中規模のMinecraftサーバー運用に最適化されています。本番環境での利用前に、必ずテスト環境で動作確認を行ってください。**
