@@ -254,3 +254,31 @@ security-scan-*.log
 
 # BFG Repo-Cleaner
 bfg.jar
+
+# ========================================
+# 環境設定ファイル - 機密情報漏洩防止
+# ========================================
+# 実際の環境設定ファイル（プレースホルダー化されたテンプレートは除く）
+config/docker.env
+config/production.env
+config/config.json
+config/development.env
+config/test.env
+config/local.env
+config/.env
+config/.env.local
+config/.env.production
+config/.env.development
+
+# Docker環境ファイル
+docker.env
+production.env
+.env.docker
+.env.production
+.env.development
+
+# 設定ファイル（実際の値を含むもの）
+config.json
+local-config.json
+private-config.json
+secrets.json

@@ -11,7 +11,7 @@ OwnServer Managerは、Minecraftサーバーの運用・管理を自動化する
 
 ⚠️ **機密情報（APIキー・トークン等）の直接コピー・ハードコーディングは厳禁です。**
 
-## � Quick Start
+## 🚀 Quick Start
 
 ### ワンライナーインストール（Ubuntu Server）
 ```bash
@@ -20,12 +20,20 @@ curl -fsSL https://raw.githubusercontent.com/your-username/ownserver-manager/alp
 
 ### クイックセットアップ
 ```bash
-# プロジェクトクローン
+# 1. プロジェクトクローン
 git clone https://github.com/your-username/ownserver-manager.git
 cd ownserver-manager
 git checkout tags/alpha-1.0.0
 
-# Docker Composeで起動
+# 2. 環境設定ファイルの作成
+./scripts/setup-environment.sh
+
+# 3. 設定ファイルを編集（YOUR_* 部分を実際の値に置換）
+# - config/docker.env
+# - config/production.env  
+# - config/config.json
+
+# 4. Docker Composeで起動
 docker compose -f docker-compose.production.yml up -d
 
 # 動作確認
