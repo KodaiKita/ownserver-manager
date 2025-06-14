@@ -80,12 +80,15 @@ git push origin --force-with-lease
 - [x] プレースホルダーへの置換
 - [x] .gitignore の強化
 - [x] セキュリティ文書作成
+- [x] Git履歴のクリーンアップ
+- [x] 漏洩APIキーの無効化・再生成
 
 ### ⏳ 要実行（手動）
-- [ ] CloudFlare API キーの無効化
-- [ ] 新しいAPIキーの生成
+- [x] CloudFlare API キーの無効化・再生成 ✅
+- [ ] CloudFlare Global API Keyの変更
+- [ ] スコープ限定APIトークンへの移行（推奨）
+- [ ] CloudFlareアカウントの2FA有効化
 - [ ] 新しい認証情報での動作確認
-- [ ] Git履歴のクリーンアップ（オプション）
 
 ### 🔄 継続的対策
 - [ ] 定期的なセキュリティスキャン
