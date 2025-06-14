@@ -8,9 +8,9 @@ const https = require('https');
 const dns = require('dns').promises;
 
 class ExternalConnectivityTester {
-    constructor(domain = 'play.cspd.net') {
+    constructor(domain = process.env.CLOUDFLARE_TEST_DOMAIN || 'yourdomain.com') {
         this.domain = domain;
-        this.minecraftPort = 25565;
+        this.minecraftPort = process.env.TARGET_PORT || 25565;
     }
 
     /**

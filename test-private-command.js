@@ -23,9 +23,13 @@ async function testPrivateCommand() {
         const recordsResponse = await manager.getRecords();
         const allRecords = recordsResponse.records;
         
-        // play.cspd.netのCNAMEレコードを検索
+        // TEST_SUBDOMAINのCNAMEレコードを検索
+        const testDomain = process.env.CLOUDFLARE_TEST_DOMAIN || 'yourdomain.com';
+        const testSubdomain = process.env.CLOUDFLARE_TEST_SUBDOMAIN || 'play';
+        const fullDomain = `${testSubdomain}.${testDomain}`;
+        
         const playRecord = allRecords.find(r => 
-            r.name === 'play.cspd.net' && r.type === 'CNAME'
+            r.name === fullDomain && r.type === 'CNAME'
         );
         
         // _minecraft._tcp.play.cspd.netのSRVレコードを検索

@@ -242,12 +242,15 @@ config.json.bak
 cloudflare-config.json
 cf-config.json
 
-# ========================================
-# セキュリティインシデント・機密文書
-# ========================================
+# セキュリティ関連ファイル (機密情報漏洩防止)
+secrets-to-remove.txt
+security-incident-*.md
 SECURITY_INCIDENT_REPORT.md
-*SECURITY_INCIDENT*
-*security-incident*
-incident-report*
-security-breach*
-*breach-report*
+archive/development-reports/
+**/development-reports/
+security-scan-*.log
+*.incident
+*.secrets
+
+# BFG Repo-Cleaner
+bfg.jar

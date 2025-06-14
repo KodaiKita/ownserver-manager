@@ -44,6 +44,7 @@ docker compose up -d
 | **完全デプロイガイド** | Ubuntu Server 新規導入 | [Ubuntu-Server-Complete-Deployment-Guide.md](./docs/deployment/Ubuntu-Server-Complete-Deployment-Guide.md) |
 | **運用マニュアル** | 日常運用・監視手順 | [Operations-Manual.md](./docs/operations/Operations-Manual.md) |
 | **設定ガイド** | 詳細設定・CloudFlare連携 | [Configuration-Guide.md](./docs/configuration/Configuration-Guide.md) |
+| **セキュリティポリシー** | 機密情報取り扱いルール | [SECURITY_POLICY.md](./docs/security/SECURITY_POLICY.md) |
 | **FAQ** | よくある質問・トラブル解決 | [FAQ.md](./docs/FAQ.md) |
 
 ## 🔧 CLI コマンド
@@ -77,7 +78,8 @@ osm config validate            # 設定検証
 
 - **アルファ版**: 本番利用前に十分なテストを実施してください
 - **バックアップ**: 重要なデータは必ずバックアップを取ってください
-- **設定**: CloudFlare API設定が必要です（[設定ガイド](./docs/configuration/CloudFlare-Setup-Guide.md)参照）
+- **セキュリティ**: [セキュリティポリシー](./docs/security/SECURITY_POLICY.md)を必ずお読みください
+- **設定**: CloudFlare API設定については[設定ガイド](./docs/configuration/CloudFlare-Setup-Guide.md)を参照
 
 ## 🐛 バグレポート・フィードバック
 
@@ -93,4 +95,5 @@ osm config validate            # 設定検証
 ---
 
 **リリース責任者**: Kodai Kita  
-**リリース日**: 2025年6月14日
+**リリース日**: 2025年6月14日  
+**バージョン**: 1.0.0-alpha.1
