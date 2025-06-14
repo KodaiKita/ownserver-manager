@@ -4,6 +4,13 @@
 
 OwnServer Managerは、Minecraftサーバーの運用・管理を自動化するNode.js製のツールです。Docker環境で動作し、CloudFlare DNS APIと連携してサーバーの公開/非公開を自動化できます。**Alpha 1.0.0** では小規模から中規模のMinecraftサーバー運用に必要な機能が実装されています。
 
+## 🚨 **重要: セキュリティポリシー**
+
+**プロジェクトに参加する前に必ずお読みください:**  
+📋 **[セキュリティポリシー](docs/security/SECURITY_POLICY.md)** - 機密情報取り扱いルール（厳守事項）
+
+⚠️ **機密情報（APIキー・トークン等）の直接コピー・ハードコーディングは厳禁です。**
+
 ## � Quick Start
 
 ### ワンライナーインストール（Ubuntu Server）

@@ -241,3 +241,13 @@ config.json.bak
 # CloudFlare設定（実値）
 cloudflare-config.json
 cf-config.json
+
+# ========================================
+# セキュリティインシデント・機密文書
+# ========================================
+SECURITY_INCIDENT_REPORT.md
+*SECURITY_INCIDENT*
+*security-incident*
+incident-report*
+security-breach*
+*breach-report*

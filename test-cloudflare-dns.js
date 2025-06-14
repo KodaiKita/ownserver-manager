@@ -5,9 +5,9 @@ const https = require('https');
 
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || 'YOUR_CLOUDFLARE_API_TOKEN';
 const ZONE_ID = process.env.CLOUDFLARE_ZONE_ID || 'YOUR_CLOUDFLARE_ZONE_ID';
-const DOMAIN = 'play.cspd.net';
-const TARGET_HOST = 'shard-2509.ownserver.kumassy.com';
-const TARGET_PORT = 17343;
+const DOMAIN = process.env.CLOUDFLARE_TEST_DOMAIN || 'yourdomain.com';
+const TARGET_HOST = process.env.TARGET_HOST || 'your-server.example.com';
+const TARGET_PORT = process.env.TARGET_PORT || 25565;
 
 function makeRequest(method, path, data = null) {
     return new Promise((resolve, reject) => {
