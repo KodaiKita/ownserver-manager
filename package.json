@@ -23,13 +23,9 @@
     "tar": "^6.2.0"
   },
   "devDependencies": {
-<<<<<<< Updated upstream
-    "mocha": "^10.2.0"
-=======
     "chai": "^5.2.0",
     "dotenv": "^16.5.0",
     "mocha": "^10.8.2"
->>>>>>> Stashed changes
   },
   "engines": {
     "node": ">=18.0.0"
