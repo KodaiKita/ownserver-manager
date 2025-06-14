@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+/**
+ * OwnServer Manager CLI Entry Point
+ */
+
+const CLIInterface = require('../src/commands/cli');
+
+const cli = new CLIInterface();
+cli.run(process.argv);

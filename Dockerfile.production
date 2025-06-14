@@ -1,0 +1,65 @@
+# Production-optimized Dockerfile for ownserver-manager Alpha 1.0.0
+FROM node:18-alpine AS dependencies
+
+# Install production dependencies only
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production --silent && \
+    npm cache clean --force
+
+# Final stage - production optimized
+FROM node:18-alpine AS production
+
+# Install minimal necessary packages
+RUN apk add --no-cache \
+    openjdk21-jre \
+    bash \
+    curl \
+    dumb-init \
+    su-exec && \
+    rm -rf /var/cache/apk/*
+
+# Create app directory
+WORKDIR /app
+
+# Create non-root user with specific UID/GID
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 -G nodejs
+
+# Copy dependencies from previous stage
+COPY --from=dependencies /app/node_modules ./node_modules
+
+# Copy application files
+COPY package*.json ./
+COPY src/ ./src/
+COPY bin/ ./bin/
+COPY config/ ./config/
+COPY docker-entrypoint.sh /usr/local/bin/
+
+# Create necessary directories with proper permissions
+RUN mkdir -p /app/logs /app/minecraft-servers /app/backups && \
+    chown -R nodejs:nodejs /app && \
+    chmod +x /app/bin/* && \
+    chmod +x /app/src/commands/cli.js && \
+    chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Set production environment
+ENV NODE_ENV=production
+ENV DOCKER_ENV=true
+ENV APP_LOG_LEVEL=info
+
+# Health check optimized for production
+HEALTHCHECK --interval=60s --timeout=15s --start-period=30s --retries=2 \
+    CMD su-exec nodejs node src/commands/cli.js health || exit 1
+
+# Expose only necessary ports
+EXPOSE 25565
+
+# Security: Use dumb-init for proper signal handling
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["node", "bin/ownserver-manager", "interactive"]
+
+# Add labels for maintenance
+LABEL maintainer="ownserver-manager"
+LABEL version="alpha-1.0.0"
+LABEL description="Minecraft Server Manager with OwnServer and CloudFlare DNS"

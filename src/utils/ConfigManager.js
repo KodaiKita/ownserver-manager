@@ -13,6 +13,13 @@ const fs = require('fs');
 const path = require('path');
 const { EventEmitter } = require('events');
 
+// Load environment variables from .env file
+try {
+    require('dotenv').config();
+} catch (error) {
+    // dotenv is optional, continue without it
+}
+
 class ConfigManager extends EventEmitter {
     constructor(configPath, options = {}) {
         super();
@@ -161,6 +168,9 @@ class ConfigManager extends EventEmitter {
         // Merge with file configuration
         this.config = this.deepMerge(this.config, fileConfig);
         
+        // Expand environment variables in the merged config
+        this.config = this.expandEnvironmentVariables(this.config);
+        
         // Apply environment variable overrides
         this.applyEnvironmentOverrides();
         
@@ -190,6 +200,9 @@ class ConfigManager extends EventEmitter {
         
         this.config = this.deepMerge({}, this.getDefaultConfig());
         this.config = this.deepMerge(this.config, fileConfig);
+        
+        // Expand environment variables in the merged config
+        this.config = this.expandEnvironmentVariables(this.config);
         this.applyEnvironmentOverrides();
         
         const stats = fs.statSync(this.configPath);
@@ -986,6 +999,38 @@ ${Object.keys(this.config).map(key => `- ${key}`).join('\n')}
         this.loaded = false;
         
         console.log('🧹 ConfigManager destroyed');
+    }
+
+    /**
+     * Expand environment variables in configuration content
+     * Supports ${VAR_NAME} and ${VAR_NAME:-default_value} syntax
+     */
+    expandEnvironmentVariables(content) {
+        if (typeof content === 'string') {
+            return content.replace(/\$\{([^}]+)\}/g, (match, varExpression) => {
+                // Handle default value syntax: ${VAR_NAME:-default_value}
+                const [varName, defaultValue] = varExpression.split(':-');
+                const envValue = process.env[varName.trim()];
+                
+                if (envValue !== undefined) {
+                    return envValue;
+                } else if (defaultValue !== undefined) {
+                    return defaultValue;
+                } else {
+                    console.warn(`⚠️ Environment variable ${varName} not found, keeping placeholder`);
+                    return match; // Keep original placeholder if no default
+                }
+            });
+        } else if (Array.isArray(content)) {
+            return content.map(item => this.expandEnvironmentVariables(item));
+        } else if (content && typeof content === 'object') {
+            const result = {};
+            for (const [key, value] of Object.entries(content)) {
+                result[key] = this.expandEnvironmentVariables(value);
+            }
+            return result;
+        }
+        return content;
     }
 }
 

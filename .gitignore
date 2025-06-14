@@ -197,3 +197,17 @@ temp-files/
 
 # 設計書など一時的なメモファイル
 *.md.tmp
+
+# Project specific ignores
+stats_*.json
+system_report_*.json
+debug-*.js
+vscode-copilot-logs-*/
+archived-copilot-fixes/
+*.log
+production-test-*.log
+alpha-*.log
+
+# Temporary files
+temp-files/
+"\0331"

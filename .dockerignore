@@ -1,0 +1,51 @@
+# Git関連
+.git
+.gitignore
+
+# ドキュメント
+*.md
+docs/
+
+# テスト関連
+tests/
+temp-files/
+test-config/
+test-logs/
+
+# ログファイル
+logs/
+*.log
+
+# 開発環境
+.vscode/
+node_modules/.cache/
+
+# 一時ファイル
+*.tmp
+temp-*
+debug-*
+
+# OS固有ファイル
+.DS_Store
+Thumbs.db
+
+# 環境設定（実際の設定は実行時にマウント）
+.env
+.env.*
+
+# Minecraftサーバーファイル（実行時にマウント）
+minecraft-servers/
+
+# バックアップ（実行時にマウント）
+backups/
+
+# 開発用スクリプト
+scripts/
+ip-test.js
+temp-pattern-test.js
+test-config-env.js
+
+# npm関連
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

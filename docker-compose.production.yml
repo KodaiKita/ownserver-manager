@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  ownserver-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile.production
+    image: ownserver-manager:alpha-1.0.0-production
+    container_name: ownserver-manager-prod
+    restart: unless-stopped
+    
+    # Production command (daemon mode for management)
+    command: ["tail", "-f", "/dev/null"]
+    
+    # Environment variables for production
+    environment:
+      - NODE_ENV=production
+      - DOCKER_ENV=true
+      - APP_LOG_LEVEL=info
+      - APP_LOG_MAX_FILES=3
+      - APP_LOG_MAX_SIZE=5MB
+    
+    env_file:
+      - ./config/production.env
+    
+    # Volume mounts for production
+    volumes:
+      - ./minecraft-servers:/app/minecraft-servers:rw    # Minecraft server directories
+      - ./config:/app/config:ro                          # Configuration files (read-only)
+      - ./logs:/app/logs:rw                              # Log files
+      - ./backups:/app/backups:rw                        # Backup files
+    
+    # Port mapping (only necessary ports)
+    ports:
+      - "25565:25565"  # Minecraft server port
+    
+    # Network settings
+    networks:
+      - ownserver-network
+    
+    # Production health check
+    healthcheck:
+      test: ["CMD", "su-exec", "nodejs", "node", "src/commands/cli.js", "health"]
+      interval: 60s
+      timeout: 15s
+      retries: 2
+      start_period: 30s
+    
+    # Resource limits for production
+    mem_limit: 3g
+    memswap_limit: 3g
+    cpus: 2.0
+    
+    # Security settings
+    security_opt:
+      - no-new-privileges:true
+    
+    # Read-only root filesystem (except for specific writable directories)
+    read_only: false  # Set to true after testing all write operations
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  ownserver-network:
+    driver: bridge
+
+# Production monitoring (optional)
+volumes:
+  prometheus-data:
+  grafana-data:
