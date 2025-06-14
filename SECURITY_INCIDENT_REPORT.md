@@ -10,20 +10,20 @@
 以下のファイルにCloudFlare API認証情報が平文で保存され、GitHubに公開されていました：
 
 1. **test-cloudflare-dns.js** 
-   - CloudFlare API Token: `c7Q0Zk7PzZMEsJHkDCd90--QjzMRynee0DvaDQiv`
-   - Zone ID: `346ec04a514234caa47f7883c8431494`
+   - CloudFlare API Token: `[REDACTED]`
+   - Zone ID: `[REDACTED]`
 
 2. **config/config.json**
-   - CloudFlare API Token: `c7Q0Zk7PzZMEsJHkDCd90--QjzMRynee0DvaDQiv`
-   - Zone ID: `346ec04a514234caa47f7883c8431494`
-   - Email: `kowdai317@gmail.com`
-   - Global API Key: `a50753ef4aee5aefa174fb54ca7cf2443c92c`
+   - CloudFlare API Token: `[REDACTED]`
+   - Zone ID: `[REDACTED]`
+   - Email: `[REDACTED]`
+   - Global API Key: `[REDACTED]`
 
 3. **.env**
-   - CloudFlare API Token: `c7Q0Zk7PzZMEsJHkDCd90--QjzMRynee0DvaDQiv`
-   - Zone ID: `346ec04a514234caa47f7883c8431494`
-   - Email: `kowdai317@gmail.com`
-   - Global API Key: `a50753ef4aee5aefa174fb54ca7cf2443c92c`
+   - CloudFlare API Token: `[REDACTED]`
+   - Zone ID: `[REDACTED]`
+   - Email: `[REDACTED]`
+   - Global API Key: `[REDACTED]`
 
 4. **docs/configuration/CloudFlare-Setup-Guide.md**
    - API Token（部分）: `c7Q0Zk7PzZ...`
@@ -53,10 +53,10 @@
 
 ### 1. CloudFlare API キーの無効化（即座に実行）
 ```bash
-# CloudFlareダッシュボードで以下を実行：
-# 1. マイプロファイル → APIトークン
-# 2. 該当トークンを「無効化」または「削除」
-# 3. 新しいAPIトークンを生成
+# 1. CloudFlareダッシュボードで以下を実行：
+# 2. マイプロファイル → APIトークン
+# 3. 該当トークン（[REDACTED]）を「無効化」または「削除」
+# 4. 新しいAPIトークンを生成
 ```
 
 ### 2. 新しいAPIトークンの設定
