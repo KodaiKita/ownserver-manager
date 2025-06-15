@@ -71,8 +71,61 @@ nano config/master.json  # 以下の4項目のみ編集:
 # 5. 全設定ファイルを自動生成
 npm run config:generate
 
-# 6. Docker起動
-docker compose up -d
+# 6. 🐳 Docker完全デプロイ（どんな環境でも確実）
+./scripts/docker-complete-deploy.sh
+```
+
+### 🐳 **Docker特化: 完全に確実なデプロイ**
+
+**どんなdirty環境でも確実に動作するDockerデプロイを提供:**
+
+```bash
+# ⚡ ワンライナー完全デプロイ
+./scripts/docker-complete-deploy.sh
+
+# 📋 手動実行（詳細制御が必要な場合）
+
+# Step 1: 完全クリーンアップ
+docker ps -q | xargs -r docker stop 2>/dev/null || true
+docker ps -a -q | xargs -r docker rm 2>/dev/null || true
+docker system prune -af --volumes
+
+# Step 2: ディレクトリ準備
+mkdir -p minecraft-servers logs backups
+sudo chown -R $(id -u):$(id -g) minecraft-servers logs backups
+chmod -R 755 minecraft-servers logs backups
+
+# Step 3: 強制再ビルド
+docker build --no-cache -f Dockerfile.production -t ownserver-manager:latest .
+
+# Step 4: 確実な起動
+docker run -d --name ownserver-manager-prod \
+  --restart unless-stopped \
+  -p 8080:8080 -p 25565:25565 \
+  -v "$(pwd)/config:/app/config:rw" \
+  -v "$(pwd)/minecraft-servers:/app/minecraft-servers:rw" \
+  -v "$(pwd)/logs:/app/logs:rw" \
+  --env-file config/docker.env \
+  ownserver-manager:latest
+
+# Step 5: 動作確認
+docker ps | grep ownserver
+docker exec ownserver-manager-prod node src/commands/cli.js health
+```
+
+### 🚨 **Docker環境での緊急復旧**
+
+```bash
+# 緊急時の完全リセット（全データ削除注意）
+docker kill $(docker ps -q) 2>/dev/null || true
+docker rm $(docker ps -a -q) 2>/dev/null || true
+docker rmi $(docker images -q) 2>/dev/null || true
+docker system prune -af --volumes
+
+# 完全再デプロイ
+git clean -fd && git reset --hard HEAD
+npm install && npm run config:generate
+./scripts/docker-complete-deploy.sh
 ```
 
 ### 📋 **従来の手動セットアップ（非推奨）**

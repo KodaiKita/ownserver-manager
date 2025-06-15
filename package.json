@@ -22,7 +22,14 @@
     "test:java": "mocha tests/minecraft/JavaVersionManager.test.js",
     "test:phase1": "mocha tests/minecraft/MinecraftServerManager_Phase1.test.js --timeout 60000",
     "dev": "node --inspect src/index.js",
-    "logs": "node src/commands/cli.js logs --follow"
+    "logs": "node src/commands/cli.js logs --follow",
+    "docker:deploy": "./scripts/docker-complete-deploy.sh",
+    "docker:run": "./scripts/docker-direct-run.sh",
+    "docker:clean": "docker ps -q | xargs -r docker stop 2>/dev/null || true && docker ps -a -q | xargs -r docker rm 2>/dev/null || true && docker system prune -af",
+    "docker:build": "docker build --no-cache -f Dockerfile.production -t ownserver-manager:latest .",
+    "docker:logs": "docker logs -f ownserver-manager-prod",
+    "docker:shell": "docker exec -it ownserver-manager-prod bash",
+    "docker:health": "docker exec ownserver-manager-prod node src/commands/cli.js health"
   },
   "dependencies": {
     "commander": "^11.0.0",
