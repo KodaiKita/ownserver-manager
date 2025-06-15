@@ -3,19 +3,86 @@
 ## 概要
 このガイドでは、OwnServer Managerの各種設定方法について詳しく説明します。
 
-## 設定ファイル構造
+## 🔧 **新機能: 統合設定管理システム**
 
-### メイン設定ファイル: `config/config.json`
+### 🚀 簡単設定 (推奨)
+
+**1つのマスター設定から全設定ファイルを自動生成:**
+
+```bash
+# セットアップ開始
+npm run setup
+
+# マスター設定を編集（4項目のみ）
+nano config/master.json
+
+# 全設定ファイルを自動生成
+npm run config:generate
+```
+
+### 📋 マスター設定ファイル: `config/master.json`
+
+**必須設定項目（4項目のみ）:**
+```json
+{
+  "cloudflare": {
+    "domain": "your-domain.com",           // あなたのドメイン
+    "apiToken": "your-cloudflare-token",   // CloudFlare APIトークン
+    "zoneId": "your-zone-id",             // CloudFlare Zone ID
+    "email": "your-email@example.com"     // CloudFlareアカウントメール
+  }
+}
+```
+
+**オプション設定（デフォルト値で動作、必要に応じて調整）:**
+```json
+{
+  "environment": "production",
+  "minecraft": {
+    "port": 25565,
+    "memoryMin": "1G",
+    "memoryMax": "2G",
+    "javaArgs": ["-Xmx2G", "-Xms1G", "-XX:+UseG1GC"],
+    "autoRestart": true,
+    "startupTimeout": 120000
+  },
+  "ownserver": {
+    "autoStart": true,
+    "restartOnFailure": true,
+    "healthCheckInterval": 30000
+  },
+  "logging": {
+    "level": "info",
+    "maxFiles": 3,
+    "directory": "/app/logs"
+  },
+  "backup": {
+    "enabled": true,
+    "retention": 7,
+    "directory": "/app/backups"
+  }
+}
+```
+
+### 🔄 自動生成される設定ファイル
+
+`npm run config:generate` 実行後に以下が生成されます：
+
+#### 1. `config/config.json` (メイン設定)
 ```json
 {
   "minecraft": {
-    "serverDirectory": "/app/minecraft-servers/test-server",
+    "serverDirectory": "/app/minecraft-servers/server",
     "port": 25565,
     "javaArgs": ["-Xmx2G", "-Xms1G", "-XX:+UseG1GC"],
     "autoRestart": true,
     "restartDelay": 5000,
     "startupTimeout": 120000,
-    "shutdownTimeout": 30000
+    "shutdownTimeout": 30000,
+    "memoryMin": "1G",
+    "memoryMax": "2G",
+    "jarFile": "server.jar",
+    "eulaAgreed": true
   },
   "ownserver": {
     "binaryPath": "/app/bin/ownserver",
@@ -25,29 +92,35 @@
     "restartOnFailure": true,
     "healthCheckInterval": 30000,
     "startupTimeout": 60000,
+    "endpointTimeout": 60000,
     "args": [],
-    "endpointTimeout": 60000
+    "enabled": true
   },
   "cloudflare": {
-    "domain": "yourdomain.com",
+    "domain": "your-domain.com",
+    "subdomain": "play",
     "ttl": 60,
-    "apiToken": "your_api_token",
-    "zoneId": "your_zone_id",
-    "email": "your_email@example.com",
-    "globalApiKey": "your_global_api_key",
-    "proxied": false,
-    "retryAttempts": 3,
-    "retryDelay": 1000,
-    "srvPriority": 0,
-    "srvWeight": 5
+    "apiToken": "your-cloudflare-token",
+    "zoneId": "your-zone-id",
+    "email": "your-email@example.com",
+    "_endpoint_note": "ownserverエンドポイントは動的に取得されます（kumassyアドレスは毎回変更されるため）",
+    "_endpoint_format": "例: shard-2509.ownserver.kumassy.com:15440",
+    "defaultPort": 25565,
+    "enableAutoUpdate": true,
+    "healthCheckEnabled": true
   },
-  "healthcheck": {
-    "enabled": true,
-    "interval": 30000,
-    "timeout": 5000,
-    "retries": 3,
-    "actions": ["restart_ownserver", "restart_minecraft"],
-    "alertThreshold": 5
+  "logging": {
+    "level": "info",
+    "maxFiles": 3,
+    "maxSize": "5m",
+    "compress": true,
+    "directory": "/app/logs",
+    "format": "json",
+    "enableConsole": true,
+    "enableFile": true
+  }
+}
+```
   },
   "logging": {
     "level": "info",

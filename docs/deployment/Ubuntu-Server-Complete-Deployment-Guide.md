@@ -123,15 +123,33 @@ docker run hello-world
 # 正常に動作すれば成功メッセージが表示されます
 ```
 
-## ステップ3: OwnServer Manager デプロイ
+## ステップ3: Node.js環境構築
 
-### 3.1 プロジェクトファイルの取得
+### 3.1 Node.js インストール
+```bash
+# NodeSourceリポジトリを追加
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+
+# Node.jsをインストール
+sudo apt install -y nodejs
+
+# バージョン確認
+node --version
+npm --version
+
+# 推奨: npm の最新版に更新
+sudo npm install -g npm@latest
+```
+
+## ステップ4: OwnServer Manager デプロイ
+
+### 4.1 プロジェクトファイルの取得
 ```bash
 # 適切なディレクトリに移動（ホームディレクトリまたは/opt推奨）
 cd ~
 
 # GitHubからクローン
-git clone https://github.com/your-username/ownserver-manager.git
+git clone https://github.com/KodaiKita/ownserver-manager.git
 
 # ディレクトリに移動
 cd ownserver-manager
@@ -141,70 +159,179 @@ git checkout tags/alpha-1.0.0
 
 # プロジェクト構造確認
 ls -la
+
+# Node.js依存関係をインストール
+npm install
 ```
 
-### 3.2 設定ファイルの準備
+### 4.2 🔧 **新機能: 統合設定管理システム（推奨）**
+
+**統合設定により、複雑な設定作業を大幅に簡素化:**
+
 ```bash
-# 設定用ディレクトリの権限確認
-ls -la config/
+# 統合設定システムでセットアップ開始
+npm run setup
 
-# 本番環境用設定ファイルをコピー・編集
-cp config/production.env config/production.env.local
-nano config/production.env.local
+# または手動でテンプレート生成
+npm run config:template
+```
 
-# CloudFlare設定ファイルの確認・初期化
-ls -la config/config.json
+**マスター設定ファイルの編集:**
+```bash
+# テンプレートをコピー
+cp config/master.json.example config/master.json
 
-# config.jsonが存在しない場合、テンプレートから作成
-if [ ! -f config/config.json ]; then
-    echo '{
+# マスター設定を編集（4項目のみ）
+nano config/master.json
+```
+
+**config/master.json で編集する必須項目:**
+```json
+{
   "cloudflare": {
-    "domain": "yourdomain.com",
-    "apiToken": "your_cloudflare_api_token",
-    "zoneId": "your_zone_id",
-    "email": "your_email@example.com"
+    "domain": "your-domain.com",           // 🔧 あなたのドメイン
+    "apiToken": "your-cloudflare-api-token", // 🔧 CloudFlare APIトークン
+    "zoneId": "your-cloudflare-zone-id",   // 🔧 CloudFlare Zone ID  
+    "email": "your-email@example.com"      // 🔧 CloudFlareアカウントメール
   },
-  "minecraft": {
-    "defaultPort": 25565,
-    "serverPath": "/app/minecraft-servers"
-  }
-}' > config/config.json
-fi
-
-# 設定ファイルの権限を適切に設定
-chmod 600 config/config.json config/production.env.local
+  "environment": "production",
+  // ... その他の設定はデフォルトで適切に設定済み
+}
 ```
 
-### 3.3 環境変数の設定
-`config/production.env.local` を編集し、以下の項目を設定：
+**CloudFlare設定の取得方法:**
+1. **APIトークン**: CloudFlareダッシュボード → マイプロファイル → APIトークン → カスタムトークンを作成
+2. **Zone ID**: CloudFlareダッシュボード → 該当ドメイン → Overview → Zone ID（右下）
+3. **Email**: CloudFlareアカウントのメールアドレス
 
 ```bash
-# Node.js環境設定
-NODE_ENV=production
+# 全設定ファイルを自動生成
+npm run config:generate
 
-# ログレベル（error, warn, info, debug）
-LOG_LEVEL=info
+# 生成結果を確認
+echo "✅ 生成された設定ファイル:"
+ls -la config/*.json config/*.env
 
-# データ保存パス
-DATA_PATH=/app/minecraft-servers
-CONFIG_PATH=/app/config
-BACKUP_PATH=/app/backups
-
-# セキュリティ設定
-ENABLE_SSL=false
-ADMIN_PASSWORD=your_secure_admin_password
-
-# 監視設定
-HEALTH_CHECK_INTERVAL=300000
-BACKUP_RETENTION_DAYS=7
+# ✅ config/config.json       (アプリケーション設定)
+# ✅ config/.env              (環境変数)
+# ✅ config/docker.env        (Docker環境変数)
+# ✅ config/production.env    (本番環境設定)
 ```
 
-## ステップ4: CloudFlare DNS設定
+## 💡 統合設定管理システムの詳細
 
-### 4.1 CloudFlareアカウント準備
+### 🔧 仕組み
+1. **master.json**: 一つのマスター設定ファイル
+2. **自動生成**: 4つの設定ファイルを自動作成
+3. **一元管理**: 重複入力・転記ミスを防止
+
+### 📋 生成される設定ファイル
+```bash
+npm run config:generate
+```
+実行後に以下が自動生成：
+
+| ファイル | 用途 | 説明 |
+|---------|------|------|
+| `config/config.json` | アプリ設定 | メイン設定ファイル |
+| `config/.env` | 環境変数 | 開発環境用 |
+| `config/docker.env` | Docker環境変数 | Docker Compose用 |
+| `config/production.env` | 本番環境設定 | 本番環境用 |
+
+### 🚨 重要な注意事項
+- **⚠️ 生成されたファイルは直接編集しない**
+- **✅ master.json のみを編集する**
+- **🔄 変更後は `npm run config:generate` を再実行**
+
+### 🛠️ トラブルシューティング
+
+#### エラー: 必須設定が不足
+```bash
+❌ Missing required configuration: cloudflare.domain, cloudflare.apiToken
+```
+**解決**: `config/master.json` の CloudFlare設定を確認
+
+#### エラー: ファイル権限問題
+```bash
+❌ Error: EACCES: permission denied
+```
+**解決**:
+```bash
+chmod 600 config/master.json
+chmod 644 config/*.env config/*.json
+```
+
+#### 設定リセット
+```bash
+# 全設定をリセットして最初からやり直し
+rm -f config/master.json config/config.json config/*.env
+npm run setup
+```
+
+### 📖 上級者向けカスタマイズ
+
+#### カスタム設定項目
+`master.json` で以下も設定可能：
+
+```json
+{
+  "minecraft": {
+    "memoryMin": "2G",
+    "memoryMax": "4G",
+    "port": 25565
+  },
+  "logging": {
+    "level": "info",
+    "maxFiles": 5
+  },
+  "backup": {
+    "enabled": true,
+    "retention": 14
+  },
+  "security": {
+    "enableSSL": true,
+    "sessionSecret": "your-secret-key"
+  }
+}
+```
+
+#### 設定スキーマ確認
+```bash
+# 利用可能な設定項目を確認
+node -e "console.log(JSON.stringify(require('./src/utils/UnifiedConfigManager.js'), null, 2))"
+```
+</details>
+
+## ステップ5: CloudFlare DNS設定
+
+### 5.1 CloudFlareアカウント準備
 1. [CloudFlare](https://www.cloudflare.com)でアカウント作成
 2. ドメインを追加してDNSをCloudFlareに移管
 3. API トークンを生成
+
+### 5.2 APIトークンの作成
+1. CloudFlareダッシュボード → 右上のプロフィール → **マイプロファイル**
+2. **APIトークン** タブ → **カスタムトークンを作成**
+3. 権限設定:
+   - **Zone:Zone:Read**
+   - **Zone:DNS:Edit**
+4. ゾーンリソース: **特定のゾーンを含める** → あなたのドメインを選択
+5. トークンを作成・コピー（安全に保管）
+
+### 5.3 Zone IDの取得
+1. CloudFlareダッシュボード → あなたのドメインを選択
+2. 右下の **API** セクション → **Zone ID** をコピー
+
+### 5.4 設定の確認
+統合設定管理を使用した場合、これらの値は既に `config/master.json` に設定済みです。
+
+```bash
+# 設定確認
+grep -E "(domain|apiToken|zoneId|email)" config/master.json
+
+# 設定が正しく反映されているか確認
+grep -E "(CLOUDFLARE_|cloudflare)" config/docker.env config/production.env
+```
 
 ### 4.2 API情報の設定
 ```bash
@@ -212,37 +339,37 @@ BACKUP_RETENTION_DAYS=7
 nano config/config.json
 ```
 
-以下の情報を設定：
-```json
-{
-  "cloudflare": {
-    "domain": "yourdomain.com",
-    "apiToken": "your_cloudflare_api_token",
-    "zoneId": "your_zone_id",
-    "email": "your_email@example.com"
-  }
-}
-```
+## ステップ6: 本番環境でのデプロイ
 
-## ステップ5: 本番環境でのデプロイ
-
-### 5.1 Docker Composeを使用した簡単デプロイ（推奨）
+### 6.1 Docker Composeを使用した簡単デプロイ（推奨）
 ```bash
 # 必要なディレクトリを作成
 mkdir -p minecraft-servers logs backups
 
-# 本番環境用設定ファイルをコピー・編集
-cp config/production.env config/production.env.local
-nano config/production.env.local
-
-# Docker Composeで本番環境を起動
+# 統合設定管理の場合、設定は既に完了しているので直接起動
 docker compose -f docker-compose.production.yml up -d
 
 # 起動確認
 docker compose -f docker-compose.production.yml ps
+
+# 従来設定の場合（非推奨）
+# cp config/production.env config/production.env.local
+# nano config/production.env.local
 ```
 
-### 5.2 手動Dockerデプロイ（上級者向け）
+### 6.2 初回起動チェック
+```bash
+# サービス状態確認
+docker compose -f docker-compose.production.yml exec ownserver-manager npm run cli status
+
+# ログ確認
+docker compose -f docker-compose.production.yml logs ownserver-manager --tail=50
+
+# 設定確認
+docker compose -f docker-compose.production.yml exec ownserver-manager npm run cli config --show
+```
+
+### 6.3 手動Dockerデプロイ（上級者向け）
 ```bash
 # 本番環境用Dockerイメージをビルド
 docker build -f Dockerfile.production -t ownserver-manager:alpha-1.0.0-production .
@@ -258,29 +385,19 @@ docker run -d --name ownserver-manager-prod \
   -v $(pwd)/config:/app/config \
   -v $(pwd)/logs:/app/logs \
   -v $(pwd)/backups:/app/backups \
-  --env-file config/production.env.local \
+  --env-file config/docker.env \
   ownserver-manager:alpha-1.0.0-production
 
 # 起動確認
 docker ps | grep ownserver-manager-prod
-```
 
-### 5.3 動作確認
-```bash
-# Docker Composeでデプロイした場合
-docker compose -f docker-compose.production.yml exec ownserver-manager node src/commands/cli.js health
-docker compose -f docker-compose.production.yml exec ownserver-manager node src/commands/cli.js status
-docker compose -f docker-compose.production.yml logs ownserver-manager
-
-# 手動Dockerデプロイの場合
-docker exec ownserver-manager-prod node src/commands/cli.js health
+# CLIコマンドテスト
 docker exec ownserver-manager-prod node src/commands/cli.js status
-docker logs ownserver-manager-prod
 ```
 
-## ステップ6: サービス自動起動設定
+## ステップ7: サービス自動起動設定
 
-### 6.1 systemdサービスファイル作成（Docker Compose版）
+### 7.1 systemdサービスファイル作成（Docker Compose版）
 ```bash
 # サービスファイルを作成
 sudo nano /etc/systemd/system/ownserver-manager.service

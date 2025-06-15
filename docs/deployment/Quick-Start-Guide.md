@@ -13,7 +13,7 @@
 
 ```bash
 # 全自動インストールスクリプト（注意：本番環境では内容を確認してから実行）
-curl -fsSL https://raw.githubusercontent.com/your-username/ownserver-manager/alpha-1.0.0/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/KodaiKita/ownserver-manager/alpha-1.0.0/scripts/install.sh | bash
 ```
 
 ### 📋 ステップバイステップ（推奨）
@@ -24,7 +24,7 @@ curl -fsSL https://raw.githubusercontent.com/your-username/ownserver-manager/alp
 sudo apt update && sudo apt upgrade -y
 
 # 必要なパッケージインストール
-sudo apt install -y curl git
+sudo apt install -y curl git nodejs npm
 
 # Dockerインストール
 curl -fsSL https://get.docker.com -o get-docker.sh
@@ -41,22 +41,69 @@ echo "一度ログアウト・ログインしてください"
 cd ~
 
 # プロジェクトクローン
-git clone https://github.com/your-username/ownserver-manager.git
+git clone https://github.com/KodaiKita/ownserver-manager.git
 cd ownserver-manager
 
 # 安定版（alpha-1.0.0）をチェックアウト
 git checkout tags/alpha-1.0.0
 ```
 
-#### ステップ3: 設定
+#### ステップ3: 🔧 **新機能: 統合設定管理（推奨）**
+
+**簡単セットアップ - 1つの設定ファイルから全自動生成:**
+
+```bash
+# Node.js依存関係をインストール
+npm install
+
+# 統合設定システムでセットアップ開始
+npm run setup
+
+# マスター設定ファイルを編集（4項目のみ）
+cp config/master.json.example config/master.json
+nano config/master.json
+```
+
+**config/master.json で編集する項目:**
+```json
+{
+  "cloudflare": {
+    "domain": "your-domain.com",          // あなたのドメイン
+    "apiToken": "your-api-token",         // CloudFlare APIトークン
+    "zoneId": "your-zone-id",            // CloudFlare Zone ID
+    "email": "your-email@example.com"    // CloudFlareアカウントメール
+  }
+}
+```
+
+```bash
+# 全設定ファイルを自動生成
+npm run config:generate
+
+# 生成された設定ファイルを確認
+ls -la config/
+# ✅ config/config.json
+# ✅ config/.env
+# ✅ config/docker.env
+# ✅ config/production.env
+```
+
+#### ステップ3(代替): 従来の手動設定
+
+<details>
+<summary>従来の方法（複雑・非推奨）</summary>
+
 ```bash
 # 基本設定ファイル準備
-cp config/production.env config/production.env.local
+./scripts/setup-environment.sh
 
-# CloudFlare設定（オプション）
-cp config/config.json.example config/config.json
-nano config/config.json  # ドメイン・APIトークンを設定
+# 各設定ファイルを個別編集
+nano config/config.json      # CloudFlare設定
+nano config/docker.env       # Docker環境変数
+nano config/production.env   # 本番環境設定
 ```
+
+</details>
 
 #### ステップ4: 起動
 ```bash
