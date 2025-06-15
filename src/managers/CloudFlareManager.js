@@ -6,6 +6,9 @@
 const EventEmitter = require('events');
 const Logger = require('../utils/Logger');
 
+// Node.js 18+ の fetch を使用
+const fetch = globalThis.fetch;
+
 class CloudFlareManager extends EventEmitter {
     constructor(apiToken, zoneId, config) {
         super();
@@ -153,11 +156,96 @@ class CloudFlareManager extends EventEmitter {
      * @returns {Promise<Object>}
      */
     async apiRequest(method, path, data = null) {
-        // API リクエスト共通処理
-        // - 認証ヘッダー設定
-        // - エラーハンドリング
-        // - レート制限対応
-        // - 指数バックオフ
+        const url = `${this.baseURL}${path}`;
+        const options = {
+            method: method.toUpperCase(),
+            headers: {
+                'Authorization': `Bearer ${this.apiToken}`,
+                'Content-Type': 'application/json'
+            }
+        };
+        
+        if (data && ['POST', 'PUT', 'PATCH'].includes(options.method)) {
+            options.body = JSON.stringify(data);
+        }
+        
+        try {
+            const response = await fetch(url, options);
+            const responseData = await response.json();
+            
+            if (!response.ok) {
+                throw new Error(`CloudFlare API Error: ${response.status} ${response.statusText} - ${JSON.stringify(responseData)}`);
+            }
+            
+            return responseData;
+        } catch (error) {
+            this.logger.error(`CloudFlare API request failed: ${method} ${path}`, { error: error.message });
+            throw error;
+        }
+    }
+    
+    /**
+     * List zones (for testing API connectivity)
+     * @returns {Promise<Array>} List of zones
+     */
+    async listZones() {
+        try {
+            const response = await this.apiRequest('GET', '/zones');
+            return response.result || [];
+        } catch (error) {
+            this.logger.error('Failed to list zones', { error: error.message });
+            throw error;
+        }
+    }
+    
+    /**
+     * Test API connectivity
+     * @returns {Promise<Object>} Test result
+     */
+    async testConnection() {
+        try {
+            const startTime = Date.now();
+            const zones = await this.listZones();
+            const responseTime = Date.now() - startTime;
+            
+            return {
+                success: true,
+                responseTime,
+                zonesCount: zones.length,
+                zones: zones.slice(0, 3).map(z => ({ id: z.id, name: z.name })) // 最初の3つのゾーンのみ表示
+            };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.message,
+                responseTime: 0
+            };
+        }
+    }
+    
+    /**
+     * Get current status of CloudFlare connection
+     * @returns {Object} Status information
+     */
+    getStatus() {
+        try {
+            return {
+                status: this.apiToken && this.zoneId ? 'configured' : 'not_configured',
+                details: {
+                    apiToken: this.apiToken ? 'set' : 'missing',
+                    zoneId: this.zoneId ? 'set' : 'missing',
+                    baseURL: this.baseURL,
+                    domain: this.config?.domain || 'not_configured'
+                },
+                responseTime: 0
+            };
+        } catch (error) {
+            return {
+                status: 'error',
+                error: error.message,
+                responseTime: 0
+            };
+        }
     }
 }
 

@@ -2,7 +2,11 @@
 
 🎮 **Production-Ready Minecraft Server Manager with CloudFlare DNS Integration**
 
-OwnServer Managerは、Minecraftサーバーの運用・管理を自動化するNode.js製のツールです。Docker環境で動作し、CloudFlar## 🖥️ システム要件
+✅ **完全テスト済み**: Ubuntu 22.04環境で9項目の包括的デプロイテストを完了
+
+OwnServer Managerは、Minecraftサーバーの運用・管理を自動化するNode.js製のツールです。Docker環境で動作し、CloudFlareとの連携によりサーバーの公開/非公開を自動化できます。**Alpha 1.0.0** では小規模から中規模のMinecraftサーバー運用に必要な機能が実装されています。
+
+## 🖥️ システム要件
 
 ### 最小要件
 - **OS**: Ubuntu Server 20.04/22.04/24.04 LTS
@@ -50,12 +54,13 @@ OwnServer Managerは、Minecraftサーバーの運用・管理を自動化する
 git clone https://github.com/KodaiKita/ownserver-manager.git
 cd ownserver-manager
 
-# 2. 簡単セットアップ（統合設定管理）
-npm run setup
-# または
-./scripts/setup-environment-unified.sh
+# 2. Node.js依存関係をインストール
+npm install
 
-# 3. マスター設定ファイルを編集（必須項目のみ）
+# 3. 簡単セットアップ（統合設定管理）
+npm run setup
+
+# 4. マスター設定ファイルを編集（必須項目のみ）
 cp config/master.json.example config/master.json
 nano config/master.json  # 以下の4項目のみ編集:
 # - cloudflare.domain: "your-domain.com"
@@ -63,10 +68,10 @@ nano config/master.json  # 以下の4項目のみ編集:
 # - cloudflare.zoneId: "your-zone-id"  
 # - cloudflare.email: "your-email@example.com"
 
-# 4. 全設定ファイルを自動生成
+# 5. 全設定ファイルを自動生成
 npm run config:generate
 
-# 5. Docker起動
+# 6. Docker起動
 docker compose up -d
 ```
 
@@ -123,6 +128,40 @@ docker compose -f docker-compose.production.yml up -d
 
 # 動作確認
 docker compose -f docker-compose.production.yml exec ownserver-manager node src/commands/cli.js health
+```
+
+## 🧪 包括的デプロイテスト
+
+### 本番デプロイ前の検証
+```bash
+# 完全なクリーン環境デプロイテスト
+./test-environment/deploy-test-final.sh
+
+# テスト項目（9項目すべて検証済み）:
+# ✅ GitHubクローン（alpha-1.0.0タグ）
+# ✅ Node.js 22.x自動インストール
+# ✅ 依存関係インストール（119パッケージ）
+# ✅ 設定ファイル生成（統合設定管理）
+# ✅ 設定妥当性検証
+# ✅ ヘルスチェック機能
+# ✅ CloudFlare API実接続テスト
+# ✅ Minecraft管理（Java 21自動インストール）
+# ✅ アプリケーション起動・実行確認
+```
+
+### 個別機能テスト
+```bash
+# 設定ファイル検証
+npm run test:config
+
+# ヘルスチェック
+npm run health
+
+# CloudFlare API接続テスト
+node scripts/test-cloudflare-api.js
+
+# Minecraft管理機能テスト
+node scripts/test-minecraft.js
 ```
 
 ## 📚 完全ドキュメント

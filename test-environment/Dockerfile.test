@@ -1,0 +1,26 @@
+# テスト用 Ubuntu 環境 Dockerfile
+FROM ubuntu:22.04
+
+# 非対話型環境に設定
+ENV DEBIAN_FRONTEND=noninteractive
+ENV CI=true
+
+# 基本パッケージのみインストール（最小構成）
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    sudo \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# テスト用ユーザー作成
+RUN useradd -m -s /bin/bash testuser && \
+    echo 'testuser ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+USER testuser
+WORKDIR /home/testuser
+
+# 作業ディレクトリ作成
+RUN mkdir -p /home/testuser/test-deploy
+
+CMD ["/bin/bash"]

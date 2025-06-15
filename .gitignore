@@ -282,3 +282,20 @@ config.json
 local-config.json
 private-config.json
 secrets.json
+
+# ========================================
+# テスト・デプロイ関連の機密ファイル
+# ========================================
+# 実際の機密情報を含むテスト設定ファイル
+config/master-deploy-test.json
+config/master-*.json
+**/master-deploy-test.json
+**/master-test.json
+**/master-prod.json
+
+# デプロイテスト結果・ログ（機密情報含む可能性）
+test-environment/deploy-test-*.log
+test-environment/execution-test-*.log
+test-environment/runtime-test-*.log
+*-deploy-test-*.log
+*-execution-test-*.log

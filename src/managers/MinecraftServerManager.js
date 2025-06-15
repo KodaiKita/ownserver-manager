@@ -33,6 +33,35 @@ class MinecraftServerManager extends MinecraftServerManager_Phase1 {
             features: this.features
         });
     }
+    
+    /**
+     * Get current status of Minecraft server
+     * @returns {Object} Status information
+     */
+    getStatus() {
+        try {
+            // Phase1では基本的なステータスチェック
+            const status = {
+                implementation: this.implementationPhase,
+                serverDirectory: this.serverDirectory,
+                isRunning: this.isServerRunning ? this.isServerRunning() : false,
+                lastStartTime: this.lastStartTime || null,
+                features: this.features
+            };
+            
+            return {
+                status: status.isRunning ? 'running' : 'stopped',
+                details: status,
+                responseTime: 0
+            };
+        } catch (error) {
+            return {
+                status: 'error',
+                error: error.message,
+                responseTime: 0
+            };
+        }
+    }
 }
 
 module.exports = MinecraftServerManager;

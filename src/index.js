@@ -59,7 +59,11 @@ class OwnServerManagerApp extends EventEmitter {
             
             // CloudFlareManagerの初期化
             if (this.config.cloudflare) {
-                this.cloudflareManager = new CloudFlareManager(this.config, this.logger);
+                this.cloudflareManager = new CloudFlareManager(
+                    this.config.cloudflare.apiToken,
+                    this.config.cloudflare.zoneId,
+                    this.config.cloudflare
+                );
                 this.logger.info('CloudFlareManager initialized');
             }
             

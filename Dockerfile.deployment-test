@@ -1,0 +1,36 @@
+FROM ubuntu:24.04
+
+# 非対話モード設定
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Tokyo
+
+# 基本パッケージインストール
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    git \
+    nano \
+    vim \
+    htop \
+    unzip \
+    software-properties-common \
+    apt-transport-https \
+    ca-certificates \
+    gnupg \
+    lsb-release \
+    sudo \
+    && rm -rf /var/lib/apt/lists/*
+
+# testユーザー作成（sudo権限付き）
+RUN useradd -m -s /bin/bash testuser && \
+    echo "testuser:testuser" | chpasswd && \
+    usermod -aG sudo testuser && \
+    echo "testuser ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# 作業ディレクトリ設定
+WORKDIR /home/testuser
+
+# testユーザーに切り替え
+USER testuser
+
+CMD ["/bin/bash"]

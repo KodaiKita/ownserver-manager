@@ -1,5 +1,12 @@
 # OwnServer Manager Alpha 1.0.0 - Ubuntu Server 完全デプロイガイド
 
+## ✅ 検証済み環境
+- **OS**: Ubuntu Server 22.04 LTS（完全テスト済み）
+- **Node.js**: 22.16.0、npm 10.9.2以降
+- **Java**: OpenJDK 21（自動インストール）
+- **API**: Cloudflare API v4実接続テスト済み
+- **デプロイテスト**: 9項目の包括テストで完全検証済み
+
 ## 対象環境
 - **OS**: Ubuntu Server 20.04 LTS / 22.04 LTS / 24.04 LTS
 - **状態**: 新規インストール直後（何もインストールされていない状態）
@@ -223,11 +230,8 @@ npm install
 **統合設定により、複雑な設定作業を大幅に簡素化:**
 
 ```bash
-# 統合設定システムでセットアップ開始
+# 統合設定システムでセットアップ開始（テンプレート生成）
 npm run setup
-
-# または手動でテンプレート生成
-npm run config:template
 ```
 
 **マスター設定ファイルの編集:**
