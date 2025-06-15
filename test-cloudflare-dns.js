@@ -6,8 +6,9 @@ const https = require('https');
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || 'YOUR_CLOUDFLARE_API_TOKEN';
 const ZONE_ID = process.env.CLOUDFLARE_ZONE_ID || 'YOUR_CLOUDFLARE_ZONE_ID';
 const DOMAIN = process.env.CLOUDFLARE_TEST_DOMAIN || 'yourdomain.com';
-const TARGET_HOST = process.env.TARGET_HOST || 'your-server.example.com';
-const TARGET_PORT = process.env.TARGET_PORT || 25565;
+// NOTE: TARGET_HOSTは動的に取得されるため、テスト用のプレースホルダーのみ設定
+const TARGET_ENDPOINT = process.env.TARGET_ENDPOINT || 'shard-XXXX.ownserver.kumassy.com:25565';
+const DEFAULT_PORT = process.env.DEFAULT_PORT || 25565;
 
 function makeRequest(method, path, data = null) {
     return new Promise((resolve, reject) => {
@@ -73,7 +74,15 @@ async function testCloudFlareOperations() {
     try {
         console.log('=== CloudFlare DNS Test Script ===');
         console.log(`Domain: ${DOMAIN}`);
-        console.log(`Target: ${TARGET_HOST}:${TARGET_PORT}`);
+        console.log(`Target Endpoint: ${TARGET_ENDPOINT}`);
+        console.log('⚠️  注意: 実際の運用では、ownserverの出力から動的にエンドポイントを取得します');
+        console.log('');
+
+        // Parse endpoint for testing
+        const [targetHost, targetPort] = TARGET_ENDPOINT.split(':');
+        const port = targetPort ? parseInt(targetPort, 10) : DEFAULT_PORT;
+        
+        console.log(`Parsed - Host: ${targetHost}, Port: ${port}`);
         console.log('');
 
         // 1. List existing DNS records
@@ -92,7 +101,7 @@ async function testCloudFlareOperations() {
         const cnameData = {
             type: 'CNAME',
             name: DOMAIN,
-            content: TARGET_HOST,
+            content: targetHost,
             ttl: 60
         };
 
@@ -124,8 +133,8 @@ async function testCloudFlareOperations() {
                 name: DOMAIN,
                 priority: 0,
                 weight: 5,
-                port: TARGET_PORT,
-                target: TARGET_HOST
+                port: port,
+                target: targetHost
             },
             ttl: 60
         };
@@ -167,7 +176,8 @@ async function testCloudFlareOperations() {
         }
 
         console.log('\\n=== DNS Test Complete ===');
-        console.log(`play.cspd.net should now point to ${TARGET_HOST}:${TARGET_PORT}`);
+        console.log(`${DOMAIN} should now point to ${targetHost}:${port}`);
+        console.log('⚠️  実際の運用では、ownserverから動的にエンドポイントを取得してDNSを更新します');
 
     } catch (error) {
         console.error('Test failed:', error.message);

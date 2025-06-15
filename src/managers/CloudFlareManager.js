@@ -20,13 +20,28 @@ class CloudFlareManager extends EventEmitter {
      * Minecraft用DNS設定の適用
      * @param {string} domain - カスタムドメイン (例: play.cspd.net)
      * @param {string} endpoint - ownserverエンドポイント (例: shard-2509.ownserver.kumassy.com:15440)
+     * @param {Object} options - オプション設定
      * @returns {Promise<void>}
      */
-    async setMinecraftDNS(domain, endpoint) {
-        // DNS設定処理
-        // 1. CNAMEレコード作成: domain → ownserverホスト
-        // 2. SRVレコード作成: _minecraft._tcp.domain → ownserverエンドポイント
-        // 3. TTL設定
+    async setMinecraftDNS(domain, endpoint, options = {}) {
+        try {
+            const { host, port } = this.parseEndpoint(endpoint);
+            
+            this.logger.info(`Setting up DNS for ${domain} → ${host}:${port}`);
+            
+            // 1. CNAMEレコード作成/更新: domain → ownserverホスト
+            await this.createOrUpdateCNAME(domain, host);
+            
+            // 2. SRVレコード作成/更新: _minecraft._tcp.domain → ownserverエンドポイント
+            await this.createOrUpdateSRV('_minecraft._tcp', domain, host, port);
+            
+            this.logger.info(`DNS setup completed for ${domain}`);
+            this.emit('dnsUpdated', { domain, endpoint, host, port });
+            
+        } catch (error) {
+            this.logger.error(`Failed to set DNS for ${domain}:`, error);
+            throw error;
+        }
     }
 
     /**
@@ -103,8 +118,30 @@ class CloudFlareManager extends EventEmitter {
      * @returns {Object} {host, port}
      */
     parseEndpoint(endpoint) {
-        // エンドポイント解析
-        // 例: "shard-2509.ownserver.kumassy.com:15440" → {host: "shard-2509.ownserver.kumassy.com", port: 15440}
+        try {
+            // 例: "shard-2509.ownserver.kumassy.com:15440" → {host: "shard-2509.ownserver.kumassy.com", port: 15440}
+            if (!endpoint || typeof endpoint !== 'string') {
+                throw new Error('Invalid endpoint format');
+            }
+            
+            const parts = endpoint.split(':');
+            if (parts.length !== 2) {
+                throw new Error('Endpoint must be in format "host:port"');
+            }
+            
+            const host = parts[0].trim();
+            const port = parseInt(parts[1].trim(), 10);
+            
+            if (!host || isNaN(port) || port <= 0 || port > 65535) {
+                throw new Error('Invalid host or port in endpoint');
+            }
+            
+            return { host, port };
+            
+        } catch (error) {
+            this.logger.error(`Failed to parse endpoint "${endpoint}":`, error);
+            throw error;
+        }
     }
 
     /**
