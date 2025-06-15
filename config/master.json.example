@@ -1,0 +1,129 @@
+{
+  "_comment": "============================================================================",
+  "_notice": "🔧 統合設定管理 - マスター設定ファイル",
+  "_instructions": [
+    "1. このファイルの必須項目を設定してください",
+    "2. 設定後、'node scripts/config-generator.js' を実行",
+    "3. 全ての設定ファイルが自動生成されます",
+    "4. 生成されたファイルは直接編集せず、このファイルを編集してください"
+  ],
+  "_version": "1.0.0",
+  "_last_updated": "2025-06-15",
+  "============================================================================": "",
+  "environment": "production",
+  "configPath": "/app/config/config.json",
+  "cloudflare": {
+    "domain": "YOUR_DOMAIN.com",
+    "subdomain": "play",
+    "ttl": 60,
+    "apiToken": "YOUR_CLOUDFLARE_API_TOKEN",
+    "zoneId": "YOUR_CLOUDFLARE_ZONE_ID",
+    "email": "your-email@example.com",
+    "defaultPort": 25565,
+    "enableAutoUpdate": true,
+    "healthCheckEnabled": true
+  },
+  "minecraft": {
+    "serverDirectory": "/app/minecraft-servers/server",
+    "port": 25565,
+    "javaArgs": [
+      "-Xmx2G",
+      "-Xms1G",
+      "-XX:+UseG1GC",
+      "-XX:+ParallelRefProcEnabled",
+      "-XX:MaxGCPauseMillis=200",
+      "-XX:+UnlockExperimentalVMOptions",
+      "-XX:+DisableExplicitGC"
+    ],
+    "autoRestart": true,
+    "restartDelay": 5000,
+    "startupTimeout": 120000,
+    "shutdownTimeout": 30000,
+    "memoryMin": "1G",
+    "memoryMax": "2G",
+    "jarFile": "server.jar",
+    "eulaAgreed": true
+  },
+  "ownserver": {
+    "binaryPath": "/app/bin/ownserver",
+    "autoRestart": true,
+    "restartDelay": 3000,
+    "autoStart": true,
+    "restartOnFailure": true,
+    "healthCheckInterval": 30000,
+    "startupTimeout": 60000,
+    "endpointTimeout": 60000,
+    "args": [],
+    "enabled": true
+  },
+  "logging": {
+    "level": "info",
+    "maxFiles": 3,
+    "maxSize": "5m",
+    "compress": true,
+    "directory": "/app/logs",
+    "format": "json",
+    "enableConsole": true,
+    "enableFile": true
+  },
+  "monitoring": {
+    "enabled": true,
+    "healthCheckInterval": 60000,
+    "statsRetentionDays": 7,
+    "alerting": {
+      "enabled": false,
+      "webhookUrl": "YOUR_WEBHOOK_URL",
+      "alertThresholds": {
+        "memoryUsage": 80,
+        "cpuUsage": 80,
+        "diskUsage": 90
+      }
+    }
+  },
+  "backup": {
+    "enabled": true,
+    "interval": "daily",
+    "retention": 7,
+    "compression": true,
+    "directory": "/app/backups",
+    "autoCleanup": true,
+    "maxBackups": 10
+  },
+  "security": {
+    "filePermissions": "644",
+    "directoryPermissions": "755",
+    "enableRateLimit": true,
+    "maxConcurrentConnections": 100,
+    "sessionTimeout": 3600000,
+    "enableSSL": false,
+    "forceHTTPS": false,
+    "sessionSecret": "CHANGE_THIS_IN_PRODUCTION"
+  },
+  "performance": {
+    "memoryLimit": 2048,
+    "cpuLimit": 2,
+    "gcInterval": 300000,
+    "cacheSize": 128,
+    "connectionPoolSize": 10,
+    "requestTimeout": 30000
+  },
+  "features": {
+    "webUI": {
+      "enabled": false,
+      "port": 3000,
+      "host": "0.0.0.0"
+    },
+    "api": {
+      "enabled": true,
+      "port": 8080,
+      "cors": true,
+      "rateLimit": true
+    },
+    "automation": {
+      "autoServerStart": true,
+      "autoServerStop": false,
+      "scheduledBackups": true,
+      "autoUpdateDNS": true
+    }
+  }
+}

@@ -24,7 +24,10 @@ class ConfigManager extends EventEmitter {
     constructor(configPath, options = {}) {
         super();
         
-        this.configPath = configPath || process.env.CONFIG_PATH || '/app/config/config.json';
+        // 設定ファイルパスの解決（絶対パス化）
+        const resolvedConfigPath = this.resolveConfigPath(configPath);
+        this.configPath = resolvedConfigPath;
+        
         this.options = {
             envPrefix: options.envPrefix || 'APP_',
             createIfMissing: options.createIfMissing !== false,
@@ -65,6 +68,57 @@ class ConfigManager extends EventEmitter {
         this.schema = this.options.schema || this.getDefaultSchema();
         
         console.log(`ConfigManager created: ${this.configPath} (envPrefix: ${this.options.envPrefix})`);
+    }
+
+    /**
+     * 設定ファイルパスを解決（絶対パス化・フォールバック対応）
+     */
+    resolveConfigPath(configPath) {
+        // 優先順位:
+        // 1. 引数で指定されたパス
+        // 2. 環境変数 CONFIG_PATH
+        // 3. Docker環境用のデフォルトパス
+        // 4. 開発環境用のデフォルトパス
+
+        let resolvedPath = configPath || process.env.CONFIG_PATH;
+
+        if (!resolvedPath) {
+            // Docker環境かどうかを判定
+            if (process.env.DOCKER_ENV || fs.existsSync('/app')) {
+                resolvedPath = '/app/config/config.json';
+            } else {
+                // 開発環境: プロジェクトルートからの相対パス
+                const projectRoot = this.findProjectRoot();
+                resolvedPath = path.join(projectRoot, 'config', 'config.json');
+            }
+        }
+
+        // 絶対パスに変換
+        if (!path.isAbsolute(resolvedPath)) {
+            const projectRoot = this.findProjectRoot();
+            resolvedPath = path.resolve(projectRoot, resolvedPath);
+        }
+
+        console.log(`Config path resolved: ${resolvedPath}`);
+        return resolvedPath;
+    }
+
+    /**
+     * プロジェクトルートディレクトリを検索
+     */
+    findProjectRoot() {
+        let currentDir = __dirname;
+        
+        // package.jsonが見つかるまで上位ディレクトリを検索
+        while (currentDir !== path.dirname(currentDir)) {
+            if (fs.existsSync(path.join(currentDir, 'package.json'))) {
+                return currentDir;
+            }
+            currentDir = path.dirname(currentDir);
+        }
+        
+        // 見つからない場合は現在のディレクトリを返す
+        return process.cwd();
     }
     
     /**

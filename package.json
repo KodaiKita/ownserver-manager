@@ -10,6 +10,9 @@
   "scripts": {
     "start": "node src/index.js",
     "cli": "node src/commands/cli.js",
+    "config:generate": "node scripts/config-generator.js",
+    "config:template": "node scripts/config-generator.js --template",
+    "setup": "node scripts/config-generator.js",
     "test": "mocha tests/**/*.test.js --recursive --timeout 30000",
     "test:minecraft": "mocha tests/minecraft/*.test.js --timeout 30000",
     "test:java": "mocha tests/minecraft/JavaVersionManager.test.js",

@@ -4,7 +4,7 @@
 
 require('dotenv').config();
 const assert = require('assert');
-const CloudFlareManager = require('../../src/utils/development-phases/CloudFlareManager');
+const CloudFlareManager = require('../../src/managers/CloudFlareManager');
 
 // Load environment variables for tests
 require('dotenv').config();
@@ -307,7 +307,7 @@ describe('CloudFlareManager - Live API Tests', function() {
 
 // CloudFlareManagerに必要なヘルパーメソッドを追加
 function addHelperMethods() {
-    const CloudFlareManager = require('../../src/utils/development-phases/CloudFlareManager');
+    const CloudFlareManager = require('../../src/managers/CloudFlareManager');
     
     // _getZoneInfo メソッドの追加
     if (!CloudFlareManager.prototype._getZoneInfo) {

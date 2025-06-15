@@ -1,4 +1,4 @@
-const { CloudFlareManager } = require('./src/utils/development-phases/CloudFlareManager.js');
+const { CloudFlareManager } = require('./src/managers/CloudFlareManager.js');
 const config = require('./config/config.json');
 
 console.log('=== Private Command Test ===');
