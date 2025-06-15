@@ -5,6 +5,13 @@
 - **状態**: 新規インストール直後（何もインストールされていない状態）
 - **権限**: sudo権限を持つユーザー
 
+## ⚠️ 既存Node.js 18.xユーザーの注意
+
+**Node.js 18.x環境の方は先にアップグレードしてください:**  
+📋 **[Node.js アップグレードガイド](Node.js-Upgrade-Guide.md)**
+
+Node.js 18.xではnpm@11.xとの互換性問題があります。既存環境でNode.js 18.xを使用している場合は、必ずアップグレードしてから続行してください。
+
 ## システム要件
 
 ### 最小要件
@@ -126,18 +133,65 @@ docker run hello-world
 ## ステップ3: Node.js環境構築
 
 ### 3.1 Node.js インストール
+
+**⚠️ 重要**: OwnServer Manager Alpha 1.0.0は **Node.js 20.x または 22.x系** を推奨します。  
+Node.js 18.xではnpm@11.xとの互換性問題があるため、以下の手順に従ってください。
+
 ```bash
-# NodeSourceリポジトリを追加
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+# Node.js 22.x（LTS推奨）リポジトリを追加
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 
 # Node.jsをインストール
 sudo apt install -y nodejs
 
+# バージョン確認（Node.js 22.x、npm 10.x以降であることを確認）
+node --version  # v22.x.x が表示されることを確認
+npm --version   # 10.x.x 以降が表示されることを確認
+
+# npm の最新版に更新（npm@11.x対応）
+sudo npm install -g npm@latest
+```
+
+**代替方法（Node.js 20.x使用）:**
+```bash
+# Node.js 20.x（LTS）を使用する場合
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
+
 # バージョン確認
+node --version  # v20.x.x が表示されることを確認
+npm --version
+
+# npm最新版に更新
+sudo npm install -g npm@latest
+```
+
+### 3.2 既存Node.js 18.xからのアップグレード
+
+既にNode.js 18.xがインストール済みの場合：
+
+```bash
+# 現在のバージョン確認
 node --version
 npm --version
 
-# 推奨: npm の最新版に更新
+# Node.js 18.x が表示される場合、以下でアップグレード
+# 既存Node.jsを削除
+sudo apt remove -y nodejs npm
+
+# パッケージキャッシュをクリア
+sudo apt autoremove -y
+sudo apt autoclean
+
+# Node.js 22.x をインストール
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# 再度バージョン確認
+node --version  # v22.x.x であることを確認
+npm --version   # 10.x.x 以降であることを確認
+
+# npm最新版に更新
 sudo npm install -g npm@latest
 ```
 

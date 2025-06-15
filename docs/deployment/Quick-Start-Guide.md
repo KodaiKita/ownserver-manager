@@ -9,6 +9,13 @@
 - sudo権限を持つユーザー
 - インターネット接続
 
+### ⚠️ Node.js 18.x ユーザーの注意
+
+**Node.js 18.x環境の方は先にアップグレードしてください:**  
+📋 **[Node.js アップグレードガイド](Node.js-Upgrade-Guide.md)**
+
+Node.js 18.xではnpm@11.xとの互換性問題があるため、Node.js 20.x/22.x系への更新を推奨します。
+
 ### ⚡ ワンライナーインストール（実験的）
 
 ```bash
@@ -23,8 +30,19 @@ curl -fsSL https://raw.githubusercontent.com/KodaiKita/ownserver-manager/alpha-1
 # システム更新
 sudo apt update && sudo apt upgrade -y
 
-# 必要なパッケージインストール
-sudo apt install -y curl git nodejs npm
+# 基本パッケージインストール（Node.js/npmは後で適切なバージョンをインストール）
+sudo apt install -y curl git
+
+# Node.js 22.x（推奨）をインストール
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# バージョン確認（Node.js 22.x、npm 10.x以降であることを確認）
+node --version  # v22.x.x 
+npm --version   # 10.x.x 以降
+
+# npm最新版に更新（npm@11.x対応）
+sudo npm install -g npm@latest
 
 # Dockerインストール
 curl -fsSL https://get.docker.com -o get-docker.sh

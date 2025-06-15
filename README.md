@@ -2,7 +2,33 @@
 
 🎮 **Production-Ready Minecraft Server Manager with CloudFlare DNS Integration**
 
-OwnServer Managerは、Minecraftサーバーの運用・管理を自動化するNode.js製のツールです。Docker環境で動作し、CloudFlare DNS APIと連携してサーバーの公開/非公開を自動化できます。**Alpha 1.0.0** では小規模から中規模のMinecraftサーバー運用に必要な機能が実装されています。
+OwnServer Managerは、Minecraftサーバーの運用・管理を自動化するNode.js製のツールです。Docker環境で動作し、CloudFlar## 🖥️ システム要件
+
+### 最小要件
+- **OS**: Ubuntu Server 20.04/22.04/24.04 LTS
+- **Node.js**: 20.x または 22.x系（**Node.js 18.xは非推奨**）
+- **npm**: 10.x以降（npm@11.x推奨）
+- **Docker**: 最新版
+- **CPU**: 2コア以上
+- **メモリ**: 4GB以上
+- **ストレージ**: 20GB以上
+- **ネットワーク**: インターネット接続必須
+
+### 推奨要件
+- **Node.js**: 22.x LTS（最新安定版）
+- **npm**: 11.x（最新版）
+- **CPU**: 4コア以上
+- **メモリ**: 8GB以上
+- **ストレージ**: 50GB以上 SSD
+- **ネットワーク**: 安定したブロードバンド接続
+
+### ⚠️ Node.js 18.x互換性の注意
+
+**Node.js 18.xは npm@11.x との互換性問題があるため、以下のバージョンを推奨:**
+- **Node.js 20.x LTS** または **Node.js 22.x LTS**
+- **npm 10.x 以降**（npm@11.x が利用可能）
+
+既存環境でNode.js 18.xを使用している場合は、[デプロイガイド](docs/deployment/Ubuntu-Server-Complete-Deployment-Guide.md#32-既存nodejs-18xからのアップグレード)を参照してアップグレードしてください。サーバーの公開/非公開を自動化できます。**Alpha 1.0.0** では小規模から中規模のMinecraftサーバー運用に必要な機能が実装されています。
 
 ## 🚨 **重要: セキュリティポリシー**
 
@@ -13,9 +39,68 @@ OwnServer Managerは、Minecraftサーバーの運用・管理を自動化する
 
 ## 🚀 Quick Start
 
+### 🔧 **新機能: 統合設定管理システム**
+
+**これまでの複雑な設定作業を大幅に簡素化しました！**
+
+1つのマスター設定ファイルから、全ての設定ファイルを自動生成できます。
+
+```bash
+# 1. プロジェクトクローン
+git clone https://github.com/KodaiKita/ownserver-manager.git
+cd ownserver-manager
+
+# 2. 簡単セットアップ（統合設定管理）
+npm run setup
+# または
+./scripts/setup-environment-unified.sh
+
+# 3. マスター設定ファイルを編集（必須項目のみ）
+cp config/master.json.example config/master.json
+nano config/master.json  # 以下の4項目のみ編集:
+# - cloudflare.domain: "your-domain.com"
+# - cloudflare.apiToken: "your-api-token"
+# - cloudflare.zoneId: "your-zone-id"  
+# - cloudflare.email: "your-email@example.com"
+
+# 4. 全設定ファイルを自動生成
+npm run config:generate
+
+# 5. Docker起動
+docker compose up -d
+```
+
+### 📋 **従来の手動セットアップ（非推奨）**
+
+<details>
+<summary>従来の方法（複雑・非推奨）</summary>
+
+```bash
+# 1. プロジェクトクローン
+git clone https://github.com/KodaiKita/ownserver-manager.git
+cd ownserver-manager
+git checkout tags/alpha-1.0.0
+
+# 2. 環境設定ファイルの作成
+./scripts/setup-environment.sh
+
+# 3. 設定ファイルを編集（YOUR_* 部分を実際の値に置換）
+# - config/docker.env
+# - config/production.env  
+# - config/config.json
+
+# 4. Docker Composeで起動
+docker compose -f docker-compose.production.yml up -d
+
+# 動作確認
+docker compose -f docker-compose.production.yml exec ownserver-manager node src/commands/cli.js health
+```
+
+</details>
+
 ### ワンライナーインストール（Ubuntu Server）
 ```bash
-curl -fsSL https://raw.githubusercontent.com/your-username/ownserver-manager/alpha-1.0.0/scripts/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/KodaiKita/ownserver-manager/alpha-1.0.0/scripts/install.sh | bash
 ```
 
 ### クイックセットアップ

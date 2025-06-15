@@ -33,7 +33,39 @@ if ! command -v node &> /dev/null; then
     exit 1
 fi
 
+# Node.jsバージョンチェック
+node_version=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
 echo -e "${GREEN}✅ Node.js found: $(node --version)${NC}"
+
+if [[ $node_version -lt 20 ]]; then
+    echo -e "${YELLOW}⚠️  警告: Node.js $node_version.x が検出されました${NC}"
+    echo -e "${YELLOW}   推奨: Node.js 20.x または 22.x系${NC}"
+    echo ""
+    echo -e "${RED}   Node.js 18.xはnpm@11.xとの互換性問題があります${NC}"
+    echo ""
+    echo -e "${BLUE}💡 アップグレード方法:${NC}"
+    echo "   # 既存Node.jsを削除"
+    echo "   sudo apt remove -y nodejs npm"
+    echo "   sudo apt autoremove -y"
+    echo ""
+    echo "   # Node.js 22.x をインストール"  
+    echo "   curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -"
+    echo "   sudo apt install -y nodejs"
+    echo ""
+    echo "   # 再度このスクリプトを実行"
+    echo "   ./scripts/setup-environment-unified.sh"
+    echo ""
+    read -p "続行しますか？ (Node.js 18.xでは一部機能に制限があります) [y/N]: " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${YELLOW}セットアップを中止しました${NC}"
+        exit 1
+    fi
+    echo -e "${YELLOW}Node.js 18.x環境で続行します（制限付き）${NC}"
+    echo ""
+elif [[ $node_version -ge 20 ]]; then
+    echo -e "${GREEN}✅ Node.js $node_version.x は推奨バージョンです${NC}"
+fi
 
 # 統合設定管理システムのセットアップ
 echo ""

@@ -91,23 +91,63 @@ install_docker() {
     # Docker がすでにインストールされているかチェック
     if command -v docker &> /dev/null; then
         log_warning "Dockerは既にインストールされています"
-        return
+    else
+        # Docker公式インストールスクリプト使用
+        curl -fsSL https://get.docker.com -o get-docker.sh
+        sudo sh get-docker.sh
+        rm get-docker.sh
+        
+        # 現在のユーザーをdockerグループに追加
+        sudo usermod -aG docker $USER
+        
+        # Dockerサービス開始・有効化
+        sudo systemctl start docker
+        sudo systemctl enable docker
+        
+        log_success "Dockerインストール完了"
+    fi
+}
+
+# Node.jsインストール
+install_nodejs() {
+    log_info "Node.js環境を構築しています..."
+    
+    # Node.jsバージョン確認
+    if command -v node &> /dev/null; then
+        node_version=$(node --version | cut -d'v' -f2 | cut -d'.' -f1)
+        if [[ $node_version -ge 20 ]]; then
+            log_warning "Node.js $node_version.x は既にインストールされています"
+            return
+        else
+            log_warning "Node.js $node_version.x が検出されました。Node.js 20.x以降が推奨です。"
+            read -p "Node.js 22.x にアップグレードしますか？ (y/N): " -n 1 -r
+            echo
+            if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+                log_warning "Node.js 18.x環境では一部機能に制限があります"
+                return
+            fi
+            
+            # 既存Node.jsを削除
+            sudo apt remove -y nodejs npm 2>/dev/null || true
+            sudo apt autoremove -y
+        fi
     fi
     
-    # Docker公式インストールスクリプト使用
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sudo sh get-docker.sh
-    rm get-docker.sh
+    # Node.js 22.x（LTS推奨）リポジトリ追加
+    curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
     
-    # 現在のユーザーをdockerグループに追加
-    sudo usermod -aG docker $USER
+    # Node.jsインストール
+    sudo apt install -y nodejs
     
-    # Dockerサービス開始・有効化
-    sudo systemctl start docker
-    sudo systemctl enable docker
+    # バージョン確認
+    node_ver=$(node --version)
+    npm_ver=$(npm --version)
+    log_success "Node.js ${node_ver}, npm ${npm_ver} インストール完了"
     
-    log_success "Dockerインストール完了"
-    log_warning "Dockerグループの変更を反映するため、インストール完了後に一度ログアウト・ログインしてください"
+    # npm最新版に更新
+    sudo npm install -g npm@latest
+    new_npm_ver=$(npm --version)
+    log_success "npm ${new_npm_ver} に更新完了"
 }
 
 # OwnServer Managerダウンロード
@@ -131,7 +171,7 @@ download_ownserver_manager() {
     fi
     
     # リポジトリクローン
-    git clone https://github.com/your-username/ownserver-manager.git
+    git clone https://github.com/KodaiKita/ownserver-manager.git
     cd ownserver-manager
     
     # alpha-1.0.0タグをチェックアウト
@@ -251,6 +291,7 @@ main() {
     
     check_prerequisites
     update_system
+    install_nodejs
     install_docker
     download_ownserver_manager
     prepare_configuration
